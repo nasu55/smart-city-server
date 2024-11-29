@@ -1,0 +1,25 @@
+{
+  "name": "smart-city-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix",
+    "pretty": "prettier --write \"*/.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "envalid": "^8.0.0",
+    "express": "^4.21.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "mongoose": "^8.8.3"
+  }
+}
