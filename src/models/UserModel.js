@@ -1,24 +1,28 @@
 import mongoose from 'mongoose';
 
-const productSchema = new mongoose.Schema(
+const shopSchema = new mongoose.Schema(
 	{
-		Product_id: {
+		UserId: {
 			type: String,
 			required: true,
 		},
-        Product_name: {
+        UserName: {
 			type: String,
 			required: true,
 		},
-        Product_brand: {
+        Password: {
 			type: String,
 			required: true,
 		},
-        Product_category: {
+        Address: {
 			type: String,
-			required: true,
+			required: false,
 		},
-        Product_price: {
+        Email_id: {
+			type: String,
+			required: false,
+		},
+        ContactNumber: {
 			type: Number,
 			required: true,
 		},
@@ -31,4 +35,4 @@ const productSchema = new mongoose.Schema(
 	{ timestamps: true },
 );
 
-export const ProductModel = mongoose.model('products', productSchema);
+export const ShopModel = mongoose.model('shops', shopSchema);
