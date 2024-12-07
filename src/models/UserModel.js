@@ -10,6 +10,14 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		Contact: {
+			type: String,
+			required: true,
+		},
+		Status: {
+			type: String,
+			required: true,
+		},
         Password: {
 			type: String,
 			required: true,

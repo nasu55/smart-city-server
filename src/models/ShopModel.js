@@ -14,6 +14,10 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		Status: {
+			type: String,
+			required: true,
+		},
         UserName: {
 			type: String,
 			required: true,
