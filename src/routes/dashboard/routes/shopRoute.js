@@ -4,8 +4,8 @@ import { createShop, deleteShop, getAllShop, updateShop, viewShop } from "../../
 
 export const shopRoute = express.Router();
 
-ShopRoutes.post('/Create/:id',createShop); //create post
-ShopRoutes.put('/update/:id',updateShop); 
-ShopRoutes.delete('/delete/:id',deleteShop); 
-ShopRoutes.get('/view/:id',viewShop);
-ShopRoutes.get('/all',getAllShop); 
+shopRoute.post('/create',createShop); //create post
+shopRoute.put('/update/:id',updateShop); 
+shopRoute.delete('/delete/:id',deleteShop); 
+shopRoute.get('/view/:id',viewShop);
+shopRoute.get('/all',getAllShop); 

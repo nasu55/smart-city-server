@@ -1,4 +1,4 @@
-import { ShopModel } from "../../models/ShopModel";
+import { ShopModel } from "../../models/ShopModel.js";
 export const createShop = async(req, res) => {
 try{
     const { category_id, username, password, email_id } = req.body;
