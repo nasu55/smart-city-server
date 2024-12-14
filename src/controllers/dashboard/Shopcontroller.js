@@ -27,15 +27,16 @@ try{
 }
 export const updateShop = async (req, res) => {
     try{
-        const productId = req.params.id;
-        const { shopName, ownerName, status, userName, password, email_id, address,contactNumber  } = req.body;
-        const dataToUpdate = await TestModel.findById(productId)
+        const shopId = req.params.id;
+console.log(req.body)
+        const { shopName, ownerName, userName, password, email_Id, address,contactNumber  } = req.body;
+        const dataToUpdate = await ShopModel.findById({_id:shopId})
 
         dataToUpdate.shopName = shopName;
         dataToUpdate.ownerName = ownerName;
         dataToUpdate.userName = userName;
         dataToUpdate.password = password;
-        dataToUpdate.email_id = email_id;
+        dataToUpdate.email_Id = email_Id;
         dataToUpdate.address = address;
         dataToUpdate.contactNumber = contactNumber;
         await dataToUpdate.save();
@@ -44,6 +45,7 @@ export const updateShop = async (req, res) => {
             message: 'Updated',
         });
         } catch (error) {
+            console.log(error)
             return res.status(500).json({
                 success: false,
                 message: 'Server error',
@@ -53,7 +55,7 @@ export const updateShop = async (req, res) => {
 export const deleteShop = async (req, res) => {
     try{
         const ShopId =req.params.id;
-        await TestModel.findByIdAndDelete(ShopId);
+        await ShopModel.findByIdAndDelete({_id:ShopId});
         return res.status(200).json({
             success: true,
             message: 'Deleted',
