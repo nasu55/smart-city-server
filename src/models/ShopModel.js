@@ -2,43 +2,40 @@ import mongoose from 'mongoose';
 
 const shopSchema = new mongoose.Schema(
 	{
-		ShopId: {
+	
+        shopName: {
 			type: String,
 			required: true,
 		},
-        ShopName: {
+        ownerName: {
 			type: String,
 			required: true,
 		},
-        OwnerName: {
+		// status: {
+		// 	type: String,
+		// 	required: true,
+		// },
+        userName: {
 			type: String,
 			required: true,
 		},
-		Status: {
+        password: {
 			type: String,
 			required: true,
 		},
-        UserName: {
-			type: String,
-			required: true,
-		},
-        Password: {
-			type: String,
-			required: true,
-		},
-        Address: {
+        address: {
 			type: String,
 			required: false,
 		},
-        Email_id: {
+        email_Id: {
 			type: String,
 			required: false,
 		},
-        ContactNumber: {
+        contactNumber: {
 			type: Number,
 			required: true,
 		},
-        DeletedAt: {
+        deletedAt: {
 			type: Date,
 			required: false,
 		},

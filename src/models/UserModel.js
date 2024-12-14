@@ -43,4 +43,4 @@ const shopSchema = new mongoose.Schema(
 	{ timestamps: true },
 );
 
-export const ShopModel = mongoose.model('shops', shopSchema);
+export const UserModel = mongoose.model('users', shopSchema);

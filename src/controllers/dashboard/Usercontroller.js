@@ -1,8 +1,9 @@
-import { UserModel } from "../../UserModelodels";
+import { UserModel } from "../../models/UserModel.js";
+
 export const createUser = async(req, res) => {
 try{
     const {UserId, Username, Contact, Status, Password, Address, Email_Id, ContactNumber, DeletedAt } = req.body;
-    await ShopModel.create({
+    await UserModel.create({
         UserId: UserId,
         Username: Username,
         Contact: Contact,
@@ -84,8 +85,13 @@ export const viewUser = async (req, res) => {
 };
 export const getAllUser = async (req, res) => {
     try{
-        const users = awaits UserModel.find();
+        const users = await UserModel.find();
         return res.status(200).json({
+            success: false,
+            message: 'Server error',
+        });
+    }catch (error) {
+        return res.status(500).json({
             success: false,
             message: 'Server error',
         });

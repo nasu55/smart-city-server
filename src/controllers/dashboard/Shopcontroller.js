@@ -1,18 +1,24 @@
 import { ShopModel } from "../../models/ShopModel.js";
 export const createShop = async(req, res) => {
 try{
-    const { category_id, username, password, email_id } = req.body;
+    console.log(req.body)
+    const { shopName, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
     await ShopModel.create({
-        category_id: category_id,
-        username: username,
+        shopName: shopName,
+        ownerName: ownerName,
+
+        userName: userName,
         password: password,
-        email_id: email_id,
+        email_Id: email_Id,
+        address: address,
+        contactNumber: contactNumber,
     });
     return res.status(200).json({
         success: true,
         message: 'Created Successfull!',
     });
 } catch (error){
+    console.log(error)
     return res.status(500).json({
         success: false,
         message: error.message,
@@ -22,13 +28,16 @@ try{
 export const updateShop = async (req, res) => {
     try{
         const productId = req.params.id;
-        const { category_id, username, password, email_id } = req.body;
+        const { shopName, ownerName, status, userName, password, email_id, address,contactNumber  } = req.body;
         const dataToUpdate = await TestModel.findById(productId)
 
-        dataToUpdate.category_id = category_id;
-        dataToUpdate.username = username;
+        dataToUpdate.shopName = shopName;
+        dataToUpdate.ownerName = ownerName;
+        dataToUpdate.userName = userName;
         dataToUpdate.password = password;
         dataToUpdate.email_id = email_id;
+        dataToUpdate.address = address;
+        dataToUpdate.contactNumber = contactNumber;
         await dataToUpdate.save();
         return res.status(200).json({
             success: true,
@@ -59,11 +68,11 @@ export const deleteShop = async (req, res) => {
 export const viewShop = async (req, res) => {
     try{
         const shopId = req.params.id;
-        const shop = await TestModel.findById(shopId);
+        const shop = await ShopModel.findById({_id:shopId});
         return res.status(200).json({
             success: true,
             message: 'Fetched',
-            data: { product: product },
+            data: { shop: shop },
         });
     } catch (error) {
         return res.status(500).json({
@@ -74,8 +83,14 @@ export const viewShop = async (req, res) => {
 };
 export const getAllShop = async (req, res) => {
     try{
-        const shops = awaits ShopModel.find();
+        const shops = await ShopModel.find();
         return res.status(200).json({
+            success: true,
+            message: 'Sucessfull',
+            data:{shops:shops}
+        });
+    }catch (error) {
+        return res.status(500).json({
             success: false,
             message: 'Server error',
         });

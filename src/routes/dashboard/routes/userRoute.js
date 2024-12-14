@@ -1,12 +1,12 @@
 import express from "express";
-import { createUser, deleteUser, getAllUser, updateUser, viewUser } from "../../../controllers/dashboard/Usercontroller";
+import { createUser, deleteUser, getAllUser, updateUser, viewUser } from "../../../controllers/dashboard/Usercontroller.js";
 
 export const UserRoutes = express.Router();
 
 
-ShopRoutes.post('/Create/:id',createUser); //create post
-ShopRoutes.put('/update/:id',updateUser); 
-ShopRoutes.delete('/delete/:id',deleteUser); 
-ShopRoutes.get('/view/:id',viewUser);
-ShopRoutes.get('/all',getAllUserer); 
+UserRoutes.post('/create/:id',createUser); //create post
+UserRoutes.put('/update/:id',updateUser); 
+UserRoutes.delete('/delete/:id',deleteUser); 
+UserRoutes.get('/view/:id',viewUser);
+UserRoutes.get('/all',getAllUser); 
 

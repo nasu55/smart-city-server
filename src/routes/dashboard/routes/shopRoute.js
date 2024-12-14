@@ -1,5 +1,5 @@
 import express from "express";
-import { createShop, deleteShop, getAllShop, updateShop, viewShop } from "../../../controllers/dashboard/Shopcontroller";
+import { createShop, deleteShop, getAllShop, updateShop, viewShop } from "../../../controllers/dashboard/Shopcontroller.js";
 
 
 export const shopRoute = express.Router();

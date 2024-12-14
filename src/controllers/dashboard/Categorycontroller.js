@@ -1,9 +1,8 @@
 import { ShopModel } from "../../models/ShopModel.js";
 export const createShop = async(req, res) => {
 try{
-    const { category_id, username, password, email_id } = req.body;
+    const { username, password, email_id } = req.body;
     await ShopModel.create({
-        category_id: category_id,
         username: username,
         password: password,
         email_id: email_id,
@@ -22,10 +21,9 @@ try{
 export const updateShop = async (req, res) => {
     try{
         const productId = req.params.id;
-        const { category_id, username, password, email_id } = req.body;
+        const { username, password, email_id } = req.body;
         const dataToUpdate = await TestModel.findById(productId)
 
-        dataToUpdate.category_id = category_id;
         dataToUpdate.username = username;
         dataToUpdate.password = password;
         dataToUpdate.email_id = email_id;
@@ -74,8 +72,13 @@ export const viewShop = async (req, res) => {
 };
 export const getAllShop = async (req, res) => {
     try{
-        const shops = awaits ShopModel.find();
+        const shops = await ShopModel.find();
         return res.status(200).json({
+            success: false,
+            message: 'Server error',
+        });
+    }catch (error) {
+        return res.status(500).json({
             success: false,
             message: 'Server error',
         });
