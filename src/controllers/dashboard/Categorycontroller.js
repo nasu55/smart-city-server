@@ -1,11 +1,13 @@
-import { ShopModel } from "../../models/ShopModel.js";
-export const createShop = async(req, res) => {
+import { CategoryModel } from "../../models/Categorymodel.js";
+
+export const createCategory = async(req, res) => {
 try{
-    const { username, password, email_id } = req.body;
-    await ShopModel.create({
-        username: username,
-        password: password,
-        email_id: email_id,
+    const { categoryName } = req.body;
+    let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+    await CategoryModel.create({
+        categoryName: categoryName,
+
+
     });
     return res.status(200).json({
         success: true,
@@ -18,15 +20,13 @@ try{
     });
 }
 }
-export const updateShop = async (req, res) => {
+export const updateCategory = async (req, res) => {
     try{
-        const productId = req.params.id;
-        const { username, password, email_id } = req.body;
-        const dataToUpdate = await TestModel.findById(productId)
+        const categoryId = req.params.id;
+        const { categoryName } = req.body;
+        const dataToUpdate = await CategoryModel.findById(categoryId)
 
-        dataToUpdate.username = username;
-        dataToUpdate.password = password;
-        dataToUpdate.email_id = email_id;
+        dataToUpdate.categoryName = categoryName;
         await dataToUpdate.save();
         return res.status(200).json({
             success: true,
@@ -39,10 +39,10 @@ export const updateShop = async (req, res) => {
             });
         }
 };
-export const deleteShop = async (req, res) => {
+export const deleteCategory = async (req, res) => {
     try{
-        const ShopId =req.params.id;
-        await TestModel.findByIdAndDelete(ShopId);
+        const categoryId =req.params.id;
+        await CategoryModel.findByIdAndDelete(categoryId);
         return res.status(200).json({
             success: true,
             message: 'Deleted',
@@ -54,14 +54,14 @@ export const deleteShop = async (req, res) => {
         });
     }
 };
-export const viewShop = async (req, res) => {
+export const viewCategory = async (req, res) => {
     try{
-        const shopId = req.params.id;
-        const shop = await TestModel.findById(shopId);
+        const categoryId = req.params.id;
+        const category = await CategoryModel.findById(categoryId);
         return res.status(200).json({
             success: true,
             message: 'Fetched',
-            data: { product: product },
+            data: { category: category },
         });
     } catch (error) {
         return res.status(500).json({
@@ -70,12 +70,13 @@ export const viewShop = async (req, res) => {
         });
     }
 };
-export const getAllShop = async (req, res) => {
+export const getAllCategory = async (req, res) => {
     try{
-        const shops = await ShopModel.find();
+        const categories = await CategoryModel.find();
         return res.status(200).json({
             success: false,
             message: 'Server error',
+            data:{categories:categories}
         });
     }catch (error) {
         return res.status(500).json({

@@ -1,12 +1,15 @@
 import { ShopModel } from "../../models/ShopModel.js";
 export const createShop = async(req, res) => {
 try{
-    console.log(req.body)
     const { shopName, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
+
+    let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+
     await ShopModel.create({
         shopName: shopName,
         ownerName: ownerName,
         userName: userName,
+        image:image,
         password: password,
         email_Id: email_Id,
         address: address,
