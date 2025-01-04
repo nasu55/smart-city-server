@@ -6,7 +6,6 @@ try{
     await ShopModel.create({
         shopName: shopName,
         ownerName: ownerName,
-
         userName: userName,
         password: password,
         email_Id: email_Id,

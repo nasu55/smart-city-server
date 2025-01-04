@@ -31,7 +31,6 @@ export const updateUser = async (req, res) => {
         const { UserId, Username, Contact, Status, Password, Address, Email_Id, ContactNumber, DeletedAt  } = req.body;
         const dataToUpdate = await TestModel.findById(UserId)
 
-        dataToUpdate.UserId = UserId;
         dataToUpdate.Username = Username;
         dataToUpdate.Contact = Contact;
         dataToUpdate.Status = Status;
