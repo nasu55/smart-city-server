@@ -1,4 +1,6 @@
 import { CategoryModel } from "../../models/Categorymodel.js";
+import path from 'path';
+
 
 export const createCategory = async(req, res) => {
 try{
@@ -6,7 +8,7 @@ try{
     let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
     await CategoryModel.create({
         categoryName: categoryName,
-
+        image:image,
 
     });
     return res.status(200).json({
@@ -24,9 +26,13 @@ export const updateCategory = async (req, res) => {
     try{
         const categoryId = req.params.id;
         const { categoryName } = req.body;
+        let image = req.body.image;
+                 image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+        
         const dataToUpdate = await CategoryModel.findById(categoryId)
 
         dataToUpdate.categoryName = categoryName;
+        dataToUpdate.image = image;
         await dataToUpdate.save();
         return res.status(200).json({
             success: true,

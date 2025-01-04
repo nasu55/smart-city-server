@@ -1,4 +1,6 @@
 import { ShopModel } from "../../models/ShopModel.js";
+import path from 'path';
+
 export const createShop = async(req, res) => {
 try{
     const { shopName, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
@@ -32,9 +34,13 @@ export const updateShop = async (req, res) => {
         const shopId = req.params.id;
 console.log(req.body)
         const { shopName, ownerName, userName, password, email_Id, address,contactNumber  } = req.body;
+let image = req.body.image;
+         image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+
         const dataToUpdate = await ShopModel.findById({_id:shopId})
 
         dataToUpdate.shopName = shopName;
+        dataToUpdate.image = image;
         dataToUpdate.ownerName = ownerName;
         dataToUpdate.userName = userName;
         dataToUpdate.password = password;
