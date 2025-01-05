@@ -106,3 +106,41 @@ export const getAllShop = async (req, res) => {
         });
     }
 };
+
+export const shopAuthentication = async (req, res, next) => {
+	try {
+		const reqEmail = req.body.userName.trim();
+		const reqPassword = req.body.password.trim();
+
+		const user = await AuthModel.findOne({ userName: reqEmail });
+
+		if (!user) {
+			return res.status(401).json({
+				success: false,
+				message: 'Authentication failed. User not found.',
+			});
+		}
+
+		// const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
+
+		// if (!isPasswordValid) {
+		// 	return res.status(401).json({
+		// 		success: false,
+		// 		message: 'Authentication failed. Invalid password.',
+		// 	});
+		// }
+
+		const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
+		const userData = { email: user.email,  };
+
+		return res.status(200).json({
+			success: true,
+			message:'Login Successfull',
+			accessToken,
+			userData,
+		});
+	} catch (err) {
+		
+		console.log(err)
+	}
+};
