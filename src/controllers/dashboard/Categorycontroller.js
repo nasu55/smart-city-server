@@ -80,7 +80,7 @@ export const getAllCategory = async (req, res) => {
     try{
         const categories = await CategoryModel.find();
         return res.status(200).json({
-            success: false,
+            success: true,
             message: 'Server error',
             data:{categories:categories}
         });
