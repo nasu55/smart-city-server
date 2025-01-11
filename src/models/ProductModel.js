@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        descripton: {
+        description: {
             type: String,
             required: true,
         },
@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema(
         // 	type: String,
         // 	required: true,
         // },
-        MRP: {
+        mrp: {
             type: String,
             required: true,
         },

@@ -3,21 +3,21 @@ import path from 'path';
 
 export const createProduct = async(req, res) => {
 try{
-    const { productName, descripton, MRP, price } = req.body;
-
+    const { productName, description, mrp, price } = req.body;
+console.log(req.body)
     let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
     await ProductModel.create({
         productName: productName,
         image: image,
-        descripton: descripton,
+        description: description,
         price:price,
-        MRP:MRP,
+        mrp:mrp,
         
     });
     return res.status(200).json({
         success: true,
-        message: 'Created Successfull!',
+        message: 'Created Successful',
     });
 } catch (error){
     console.log(error)
@@ -31,7 +31,7 @@ export const updateProduct = async (req, res) => {
     try{
         const productId = req.params.id;
 console.log(req.body)
-        const { productName, descripton, MRP, price  } = req.body;
+        const { productName, description, mrp, price  } = req.body;
 let image = req.body.image;
          image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
@@ -39,9 +39,9 @@ let image = req.body.image;
 
         dataToUpdate.productName = productName;
         dataToUpdate.image = image;
-        dataToUpdate.descripton = descripton;
+        dataToUpdate.description = description;
         dataToUpdate.price = price;
-        dataToUpdate.MRP = MRP;
+        dataToUpdate.mrp = mrp;
         
         await dataToUpdate.save();
         return res.status(200).json({
@@ -92,7 +92,7 @@ export const getAllProduct = async (req, res) => {
         const products = await ProductModel.find();
         return res.status(200).json({
             success: true,
-            message: 'Sucessfull',
+            message: 'Successful',
             data:{products:products}
         });
     }catch (error) {

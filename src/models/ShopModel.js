@@ -7,6 +7,10 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		shopDescription: {
+			type: String,
+			required: false,
+		},
         ownerName: {
 			type: String,
 			required: true,
