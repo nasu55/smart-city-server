@@ -3,12 +3,13 @@ import path from 'path';
 
 export const createShop = async(req, res) => {
 try{
-    const { shopName, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
+    const { shopName,shopDescription, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
 
     let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
     await ShopModel.create({
         shopName: shopName,
+        shopDescription: shopDescription,
         ownerName: ownerName,
         userName: userName,
         image:image,
@@ -109,38 +110,40 @@ export const getAllShop = async (req, res) => {
 
 export const shopAuthentication = async (req, res, next) => {
 	try {
-		const reqEmail = req.body.userName.trim();
-		const reqPassword = req.body.password.trim();
+		const reqUserName = req.body.userName;
+		const reqPassword = req.body.password;
 
-		const user = await AuthModel.findOne({ userName: reqEmail });
+		const user = await ShopModel.findOne({ userName: reqUserName });
 
 		if (!user) {
-			return res.status(401).json({
+			return res.status(200).json({
 				success: false,
 				message: 'Authentication failed. User not found.',
 			});
 		}
 
+	
+        const isPasswordValid = await ShopModel.findOne({ password: reqPassword });
 		// const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
 
-		// if (!isPasswordValid) {
-		// 	return res.status(401).json({
-		// 		success: false,
-		// 		message: 'Authentication failed. Invalid password.',
-		// 	});
-		// }
+		if (!isPasswordValid) {
+			return res.status(200).json({
+				success: false,
+				message: 'Authentication failed. Invalid password.',
+			});
+		}
 
-		const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
-		const userData = { email: user.email,  };
+		// const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
+		// const userData = { email: user.email,  };
 
 		return res.status(200).json({
 			success: true,
 			message:'Login Successfull',
-			accessToken,
-			userData,
+			// accessToken,
+			// userData,
 		});
 	} catch (err) {
 		
-		console.log(err)
+		console.log('Error::',err)
 	}
 };

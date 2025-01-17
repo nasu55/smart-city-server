@@ -28,7 +28,7 @@ export const postAuthentication = async (req, res, next) => {
 		const user = await AuthModel.findOne({ email: reqEmail });
 
 		if (!user) {
-			return res.status(401).json({
+			return res.status(200).json({
 				success: false,
 				message: 'Authentication failed. User not found.',
 			});
@@ -37,7 +37,7 @@ export const postAuthentication = async (req, res, next) => {
 		const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
 
 		if (!isPasswordValid) {
-			return res.status(401).json({
+			return res.status(200).json({
 				success: false,
 				message: 'Authentication failed. Invalid password.',
 			});
