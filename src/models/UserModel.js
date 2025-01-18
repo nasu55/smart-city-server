@@ -1,11 +1,7 @@
 import mongoose from 'mongoose';
 
-const shopSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
 	{
-		UserId: {
-			type: String,
-			required: true,
-		},
         UserName: {
 			type: String,
 			required: true,
@@ -14,26 +10,17 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		Status: {
-			type: String,
-			required: true,
-		},
+		
         Password: {
 			type: String,
 			required: true,
 		},
-        Address: {
-			type: String,
-			required: false,
-		},
+        
         Email_id: {
 			type: String,
 			required: false,
 		},
-        ContactNumber: {
-			type: Number,
-			required: true,
-		},
+        
         DeletedAt: {
 			type: Date,
 			required: false,
@@ -43,4 +30,4 @@ const shopSchema = new mongoose.Schema(
 	{ timestamps: true },
 );
 
-export const UserModel = mongoose.model('users', shopSchema);
+export const UserModel = mongoose.model('users', userSchema);

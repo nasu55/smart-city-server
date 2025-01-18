@@ -2,17 +2,12 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const createUser = async(req, res) => {
 try{
-    const {UserId, Username, Contact, Status, Password, Address, Email_Id, ContactNumber, DeletedAt } = req.body;
+    const { Username,Contact,Email_Id, Password} = req.body;
     await UserModel.create({
-        UserId: UserId,
         Username: Username,
         Contact: Contact,
-        Status: Status,
-        Password: Password,
-        Address: Address,
         Email_Id: Email_Id,
-        ContactNumber: ContactNumber,
-        DeletedAt: DeletedAt,
+        Password: Password,
  });
     return res.status(200).json({
         success: true,
@@ -28,17 +23,13 @@ try{
 export const updateUser = async (req, res) => {
     try{
         const productId = req.params.id;
-        const { UserId, Username, Contact, Status, Password, Address, Email_Id, ContactNumber, DeletedAt  } = req.body;
+        const { Username, Contact, Email_Id, Password  } = req.body;
         const dataToUpdate = await TestModel.findById(UserId)
 
         dataToUpdate.Username = Username;
         dataToUpdate.Contact = Contact;
-        dataToUpdate.Status = Status;
-        dataToUpdate.Password = Password;
-        dataToUpdate.Address = Address;
         dataToUpdate.Email_Id = Email_Id;
-        dataToUpdate.ContactNumber = ContactNumber;
-        dataToUpdate.DeletedAt = DeletedAt;
+        dataToUpdate.Password = Password;
         await dataToUpdate.save();
         return res.status(200).json({
             success: true,
@@ -95,4 +86,41 @@ export const getAllUser = async (req, res) => {
             message: 'Server error',
         });
     }
+};
+export const postAuthentication = async (req, res, next) => {
+	try {
+		const reqEmail = req.body.email.trim();
+		const reqPassword = req.body.password.trim();
+
+		const user = await UserModel.findOne({ email: reqEmail });
+
+		if (!user) {
+			return res.status(200).json({
+				success: false,
+				message: 'Authentication failed. User not found.',
+			});
+		}
+
+		const isPasswordValid = await UserModel.findOne({ password: reqpassword });
+
+		if (!isPasswordValid) {
+			return res.status(200).json({
+				success: false,
+				message: 'Authentication failed. Invalid password.',
+			});
+		}
+
+		// const accessToken = jwt.sign({ userId: user._id }, env.JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
+		const userData = { email: user.email,_id:user._id  };
+
+		return res.status(200).json({
+			success: true,
+			message:'Login Successfull',
+			// accessToken,
+			userData,
+		});
+	} catch (err) {
+		
+		console.log(err)
+	}
 };
