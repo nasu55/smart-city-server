@@ -87,7 +87,7 @@ export const viewProduct = async (req, res) => {
         });
     }
 };
-export const getAllProduct = async (req, res) => {
+export const getAllProducts = async (req, res) => {
     try{
         const products = await ProductModel.find();
         return res.status(200).json({
