@@ -1,15 +1,18 @@
+import mongoose from "mongoose";
 import { ProductModel } from "../../models/ProductModel.js";
 import path from 'path';
+
 
 export const createProduct = async(req, res) => {
 try{
     const { productName, description, mrp, price } = req.body;
-console.log(req.body)
+    const {userId} = req.user;
     let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
     await ProductModel.create({
         productName: productName,
         image: image,
+        storeId:userId,
         description: description,
         price:price,
         mrp:mrp,
@@ -30,7 +33,7 @@ console.log(req.body)
 export const updateProduct = async (req, res) => {
     try{
         const productId = req.params.id;
-console.log(req.body)
+const {userId} = req.body;
         const { productName, description, mrp, price  } = req.body;
 let image = req.body.image;
          image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
@@ -89,7 +92,16 @@ export const viewProduct = async (req, res) => {
 };
 export const getAllProducts = async (req, res) => {
     try{
-        const products = await ProductModel.find();
+        const {userId} = req.user
+        console.log(userId)
+        const products = await ProductModel.aggregate([
+            {
+                $match: {
+                    storeId: new mongoose.Types.ObjectId(userId),
+                },
+            }
+        ]);
+        console.log(products)
         return res.status(200).json({
             success: true,
             message: 'Successful',

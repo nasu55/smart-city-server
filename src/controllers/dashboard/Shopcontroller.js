@@ -2,11 +2,15 @@ import { ShopModel } from '../../models/ShopModel.js';
 import { LocalityModel } from '../../models/LocalityModel.js';
 import path from 'path';
 import dayjs from 'dayjs';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import env from '../../../env.js';
 
 export const createShop = async (req, res) => {
 	try {
 		const { shopName, shopDescription, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
-
+		const salt = bcrypt.genSaltSync(10);
+		const hash = bcrypt.hashSync(password, salt);
 		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
 		await ShopModel.create({
@@ -15,7 +19,7 @@ export const createShop = async (req, res) => {
 			ownerName: ownerName,
 			userName: userName,
 			image: image,
-			password: password,
+			password: hash,
 			email_Id: email_Id,
 			location: location,
 			contactNumber: contactNumber,
@@ -37,16 +41,22 @@ export const updateShop = async (req, res) => {
 		const shopId = req.params.id;
 		console.log(req.body);
 		const { shopName, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
+
+
 		let image = req.body.image;
 		image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
 		const dataToUpdate = await ShopModel.findById({ _id: shopId });
-
+        if(password){
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(password, salt);
+            dataToUpdate.password = hash;
+        }
 		dataToUpdate.shopName = shopName;
 		dataToUpdate.image = image;
 		dataToUpdate.ownerName = ownerName;
 		dataToUpdate.userName = userName;
-		dataToUpdate.password = password;
+
 		dataToUpdate.email_Id = email_Id;
 		dataToUpdate.location = location;
 		dataToUpdate.contactNumber = contactNumber;
@@ -155,10 +165,10 @@ export const getAllShop = async (req, res) => {
 
 export const shopAuthentication = async (req, res, next) => {
 	try {
-		const reqUserName = req.body.userName;
+		const reqUserName = req.body.email;
 		const reqPassword = req.body.password;
 
-		const user = await ShopModel.findOne({ userName: reqUserName });
+		const user = await ShopModel.findOne({ email_Id: reqUserName });
 
 		if (!user) {
 			return res.status(200).json({
@@ -167,8 +177,8 @@ export const shopAuthentication = async (req, res, next) => {
 			});
 		}
 
-		const isPasswordValid = await ShopModel.findOne({ password: reqPassword });
-		// const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
+        const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
+
 
 		if (!isPasswordValid) {
 			return res.status(200).json({
@@ -177,14 +187,14 @@ export const shopAuthentication = async (req, res, next) => {
 			});
 		}
 
-		// const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
-		// const userData = { email: user.email,  };
+		const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
+		const userData = { email: user.email_Id,  };
 
 		return res.status(200).json({
 			success: true,
 			message: 'Login Successfull',
-			// accessToken,
-			// userData,
+			accessToken,
+			userData,
 		});
 	} catch (err) {
 		console.log('Error::', err);

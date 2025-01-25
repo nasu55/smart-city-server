@@ -2,12 +2,28 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
 	{
-        userName: {
+        name: {
 			type: String,
 			required: true,
 		},
-		contact: {
+		state: {
 			type: String,
+			required: true,
+		},
+		district: {
+			type: String,
+			required: true,
+		},
+		city: {
+			type: String,
+			required: true,
+		},
+		pincode: {
+			type: Number,
+			required: true,
+		},
+		contact: {
+			type: Number,
 			required: true,
 		},
 		

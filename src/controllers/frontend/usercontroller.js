@@ -5,10 +5,10 @@ import env from '../../../env.js';
 
 export const createUser = async (req, res, next) => {
 	try {
-		console.log('called');
-		const { name, email, contact, password,state,district,city,pincode } = req.body;
-		console.log("name::::",name);
-		 if(password != confirm_password){
+
+		const { name, email, contact, password,state,district,city,pincode,confirm_password } = req.body;
+
+		if(password != confirm_password){
 		    return res.status(200).send('Password is not same as confirm password!');
 		}
 
@@ -25,9 +25,6 @@ export const createUser = async (req, res, next) => {
 			district: district,
 			city: city,
 			pincode: pincode,
-
-
-
 
 		});
 		await newUser.save();
