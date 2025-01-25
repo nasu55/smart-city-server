@@ -6,11 +6,11 @@ import env from '../../../env.js';
 export const createUser = async (req, res, next) => {
 	try {
 		console.log('called');
-		const { userName, email, contact, password } = req.body;
-		console.log("userName::::",userName);
-		// if(password != confirm_password){
-		//     return res.status(200).send('Password is not same as confirm password!');
-		// }
+		const { name, email, contact, password,state,district,city,pincode } = req.body;
+		console.log("name::::",name);
+		 if(password != confirm_password){
+		    return res.status(200).send('Password is not same as confirm password!');
+		}
 
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(password, salt);
@@ -20,7 +20,15 @@ export const createUser = async (req, res, next) => {
 			password: hash,
 			email: email,
 			contact: contact,
-			userName: userName,
+			name: name,
+			state: state,
+			district: district,
+			city: city,
+			pincode: pincode,
+
+
+
+
 		});
 		await newUser.save();
 		return res.status(200).send('User has been created!');

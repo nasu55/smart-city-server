@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 const shopSchema = new mongoose.Schema(
 	{
-	
-        shopName: {
+		shopName: {
 			type: String,
 			required: true,
 		},
@@ -11,11 +10,11 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: false,
 		},
-        ownerName: {
+		ownerName: {
 			type: String,
 			required: true,
 		},
-        image: {
+		image: {
 			type: String,
 			required: true,
 		},
@@ -23,31 +22,31 @@ const shopSchema = new mongoose.Schema(
 		// 	type: String,
 		// 	required: true,
 		// },
-        userName: {
+		userName: {
 			type: String,
 			required: true,
 		},
-        password: {
+		password: {
 			type: String,
 			required: false,
 		},
-        address: {
+		location: {
+			type: mongoose.Types.ObjectId,
+			required: false,
+		},
+		email_Id: {
 			type: String,
 			required: false,
 		},
-        email_Id: {
-			type: String,
-			required: false,
-		},
-        contactNumber: {
+		contactNumber: {
 			type: Number,
 			required: true,
 		},
-        deletedAt: {
+		deletedAt: {
 			type: Date,
 			required: false,
+			default: null,
 		},
-        
 	},
 	{ timestamps: true },
 );

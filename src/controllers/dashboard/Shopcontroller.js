@@ -1,111 +1,156 @@
-import { ShopModel } from "../../models/ShopModel.js";
+import { ShopModel } from '../../models/ShopModel.js';
+import { LocalityModel } from '../../models/LocalityModel.js';
 import path from 'path';
+import dayjs from 'dayjs';
 
-export const createShop = async(req, res) => {
-try{
-    const { shopName,shopDescription, ownerName, userName, password, email_Id, address,contactNumber } = req.body;
+export const createShop = async (req, res) => {
+	try {
+		const { shopName, shopDescription, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
 
-    let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
-    await ShopModel.create({
-        shopName: shopName,
-        shopDescription: shopDescription,
-        ownerName: ownerName,
-        userName: userName,
-        image:image,
-        password: password,
-        email_Id: email_Id,
-        address: address,
-        contactNumber: contactNumber,
-    });
-    return res.status(200).json({
-        success: true,
-        message: 'Created Successfull!',
-    });
-} catch (error){
-    console.log(error)
-    return res.status(500).json({
-        success: false,
-        message: error.message,
-    });
-}
-}
+		await ShopModel.create({
+			shopName: shopName,
+			shopDescription: shopDescription,
+			ownerName: ownerName,
+			userName: userName,
+			image: image,
+			password: password,
+			email_Id: email_Id,
+			location: location,
+			contactNumber: contactNumber,
+		});
+		return res.status(200).json({
+			success: true,
+			message: 'Created Successfull!',
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
 export const updateShop = async (req, res) => {
-    try{
-        const shopId = req.params.id;
-console.log(req.body)
-        const { shopName, ownerName, userName, password, email_Id, address,contactNumber  } = req.body;
-let image = req.body.image;
-         image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+	try {
+		const shopId = req.params.id;
+		console.log(req.body);
+		const { shopName, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
+		let image = req.body.image;
+		image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 
-        const dataToUpdate = await ShopModel.findById({_id:shopId})
+		const dataToUpdate = await ShopModel.findById({ _id: shopId });
 
-        dataToUpdate.shopName = shopName;
-        dataToUpdate.image = image;
-        dataToUpdate.ownerName = ownerName;
-        dataToUpdate.userName = userName;
-        dataToUpdate.password = password;
-        dataToUpdate.email_Id = email_Id;
-        dataToUpdate.address = address;
-        dataToUpdate.contactNumber = contactNumber;
-        await dataToUpdate.save();
-        return res.status(200).json({
-            success: true,
-            message: 'Updated',
-        });
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json({
-                success: false,
-                message: 'Server error',
-            });
-        }
+		dataToUpdate.shopName = shopName;
+		dataToUpdate.image = image;
+		dataToUpdate.ownerName = ownerName;
+		dataToUpdate.userName = userName;
+		dataToUpdate.password = password;
+		dataToUpdate.email_Id = email_Id;
+		dataToUpdate.location = location;
+		dataToUpdate.contactNumber = contactNumber;
+		await dataToUpdate.save();
+		return res.status(200).json({
+			success: true,
+			message: 'Updated',
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
 };
 export const deleteShop = async (req, res) => {
-    try{
-        const ShopId =req.params.id;
-        await ShopModel.findByIdAndDelete({_id:ShopId});
-        return res.status(200).json({
-            success: true,
-            message: 'Deleted',
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
-    }
+	try {
+		const ShopId = req.params.id;
+		const shop = await ShopModel.findById({ _id: ShopId });
+
+		shop.deletedAt = dayjs();
+
+		shop.save();
+
+		return res.status(200).json({
+			success: true,
+			message: 'Deleted',
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
 };
 export const viewShop = async (req, res) => {
-    try{
-        const shopId = req.params.id;
-        const shop = await ShopModel.findById({_id:shopId});
-        return res.status(200).json({
-            success: true,
-            message: 'Fetched',
-            data: { shop: shop },
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Server error',
-        });
-    }
+	try {
+		const shopId = req.params.id;
+		const shop = await ShopModel.findById({ _id: shopId });
+		return res.status(200).json({
+			success: true,
+			message: 'Fetched',
+			data: { shop: shop },
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
 };
 export const getAllShop = async (req, res) => {
-    try{
-        const shops = await ShopModel.find();
-        return res.status(200).json({
-            success: true,
-            message: 'Sucessfull',
-            data:{shops:shops}
-        });
-    }catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Server error',
-        });
-    }
+	try {
+		const shops = await ShopModel.aggregate([
+			{
+				$match: {
+					deletedAt: null,
+				},
+			},
+			{
+                $lookup: {
+                  from: LocalityModel.modelName,
+                  localField: "location",
+                  foreignField: "_id",
+                  as: 'locations',
+                },
+              },
+              {
+                $unwind:{
+                  path:'$locations',
+                  preserveNullAndEmptyArrays:true
+                },
+              },
+			{
+				$project: {
+					_id: 1,
+					shopName: 1,
+					ownerName: 1,
+					shopDescription: 1,
+					email_Id: 1,
+					location: '$locations.localityName',
+					contactNumber: 1,
+					userName: 1,
+					password: 1,
+					image: 1,
+				},
+			},
+		]);
+
+		console.log('data:::', shops);
+
+		return res.status(200).json({
+			success: true,
+			message: 'Sucessfull',
+			data: { shops: shops },
+		});
+	} catch (error) {
+		console.log('error', error);
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
 };
 
 export const shopAuthentication = async (req, res, next) => {
@@ -122,8 +167,7 @@ export const shopAuthentication = async (req, res, next) => {
 			});
 		}
 
-	
-        const isPasswordValid = await ShopModel.findOne({ password: reqPassword });
+		const isPasswordValid = await ShopModel.findOne({ password: reqPassword });
 		// const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
 
 		if (!isPasswordValid) {
@@ -138,12 +182,11 @@ export const shopAuthentication = async (req, res, next) => {
 
 		return res.status(200).json({
 			success: true,
-			message:'Login Successfull',
+			message: 'Login Successfull',
 			// accessToken,
 			// userData,
 		});
 	} catch (err) {
-		
-		console.log('Error::',err)
+		console.log('Error::', err);
 	}
 };
