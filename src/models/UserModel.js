@@ -6,23 +6,7 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		state: {
-			type: String,
-			required: true,
-		},
-		district: {
-			type: String,
-			required: true,
-		},
-		city: {
-			type: String,
-			required: true,
-		},
-		pincode: {
-			type: Number,
-			required: true,
-		},
-		contact: {
+	 	contact: {
 			type: Number,
 			required: true,
 		},
