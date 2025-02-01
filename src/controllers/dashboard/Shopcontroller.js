@@ -5,10 +5,16 @@ import dayjs from 'dayjs';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import env from '../../../env.js';
+import mongoose from 'mongoose';
+import { CategoryModel } from '../../models/Categorymodel.js';
 
 export const createShop = async (req, res) => {
 	try {
-		const { shopName, shopDescription, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
+		console.log('callllll')
+		console.log('reqqqqqqqqqqqqqqqqqqqqqqqqq',req.body);
+		console.log('reqqqqq',req.file)
+
+		const { shopName,category, shopDescription, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(password, salt);
 		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
@@ -23,6 +29,7 @@ export const createShop = async (req, res) => {
 			email_Id: email_Id,
 			location: location,
 			contactNumber: contactNumber,
+			category: category
 		});
 		return res.status(200).json({
 			success: true,
@@ -39,8 +46,7 @@ export const createShop = async (req, res) => {
 export const updateShop = async (req, res) => {
 	try {
 		const shopId = req.params.id;
-		console.log(req.body);
-		const { shopName, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
+		const { shopName,category, ownerName, userName, password, email_Id, location, contactNumber } = req.body;
 
 
 		let image = req.body.image;
@@ -60,6 +66,8 @@ export const updateShop = async (req, res) => {
 		dataToUpdate.email_Id = email_Id;
 		dataToUpdate.location = location;
 		dataToUpdate.contactNumber = contactNumber;
+		dataToUpdate.category = category;
+
 		await dataToUpdate.save();
 		return res.status(200).json({
 			success: true,
@@ -132,6 +140,20 @@ export const getAllShop = async (req, res) => {
                 },
               },
 			{
+                $lookup: {
+                  from: CategoryModel.modelName,
+                  localField: "category",
+                  foreignField: "_id",
+                  as: 'categories',
+                },
+              },
+              {
+                $unwind:{
+                  path:'$categories',
+                  preserveNullAndEmptyArrays:true
+                },
+              },
+			{
 				$project: {
 					_id: 1,
 					shopName: 1,
@@ -139,6 +161,7 @@ export const getAllShop = async (req, res) => {
 					shopDescription: 1,
 					email_Id: 1,
 					location: '$locations.localityName',
+					category: '$categories.categoryName',
 					contactNumber: 1,
 					userName: 1,
 					password: 1,
@@ -147,7 +170,7 @@ export const getAllShop = async (req, res) => {
 			},
 		]);
 
-		console.log('data:::', shops);
+		// console.log('data:::', shops);
 
 		return res.status(200).json({
 			success: true,
@@ -200,3 +223,29 @@ export const shopAuthentication = async (req, res, next) => {
 		console.log('Error::', err);
 	}
 };
+export const featuredShop = async (req, res, next) => {
+	try {
+		const shopId = req.params.id;
+	  const shop = await ShopModel.findOne({ _id: new mongoose.Types.ObjectId(shopId) });
+	  if (!shop) {
+		return res.status(422).json({
+		  success: false,
+		  message: 'shop not found',
+		});
+	  }
+	  shop.featured = shop.featured === true ? false : true;
+	  await shop.save();
+  
+	  res.status(200).json({
+		success: true,
+		message: shop.featured
+		  ? 'shop is Featured'
+		  : ' shop is not Featured',
+	  });
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});	}
+  };
+ 
