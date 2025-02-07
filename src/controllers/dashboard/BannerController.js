@@ -1,32 +1,30 @@
-// import { BannerModel } from "../../models/BannerModel.js";
 import path from 'path';
-// import { FoodModel } from "../../models/FoodModel.js";
-// import { CategoryModel } from "../../models/CategoryModel.js";
-
 import { BannerModel } from '../../models/BannerModel.js';
+import { ProductModel } from '../../models/ProductModel.js';
+import { ShopModel } from '../../models/ShopModel.js';
 
 export const createBanner = async (req, res) => {
 	try {
-        console.log('calll')
-		const {  shop,category } = req.body;
-        console.log('bodyyyyyyyy',req.body)
+		console.log('calll');
+		const { shop, category } = req.body;
+		console.log('bodyyyyyyyy', req.body);
 
-        console.log('imageeee',req.file)
-		 let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+		console.log('imageeee', req.file);
+		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 		const response = await BannerModel.create({
-			catgeory:category,
+			catgeory: category,
 			shop: shop,
-			bannerImage: image,
+			image: image,
 		});
 
-        console.log('bannerrrr',response)
+		console.log('bannerrrr', response);
 
 		return res.status(200).json({
 			success: true,
 			message: 'Created Successfully!',
 		});
 	} catch (error) {
-        console.log('error',error)
+		console.log('error', error);
 		return res.status(500).json({
 			success: false,
 			message: error.message,
@@ -37,15 +35,15 @@ export const createBanner = async (req, res) => {
 export const updateBanner = async (req, res) => {
 	try {
 		const bannerId = req.params.id;
-		const { product } = req.body;
+		const { shop } = req.body;
+		let File = req.body.image;
 		const dataToUpdate = await BannerModel.findById({ _id: bannerId });
-		// let image = dataToUpdate.bannerImage
-		// image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
-		// console.log(req.file)
-		// console.log(req.files)
+		File = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+		console.log(req.file);
+		console.log(req.files);
 
-		dataToUpdate.product = product;
-		//   dataToUpdate.bannerImage = image;
+		dataToUpdate.shop = shop;
+		dataToUpdate.image = File;
 
 		await dataToUpdate.save();
 		return res.status(200).json({
@@ -62,71 +60,68 @@ export const updateBanner = async (req, res) => {
 };
 
 export const deleteBanner = async (req, res) => {
-   try {
-      const bannerId = req.params.id;
+	try {
+		const bannerId = req.params.id;
 
-       await BannerModel.findByIdAndDelete(bannerId);
+		await BannerModel.findByIdAndDelete(bannerId);
 
-      return res.status(200).json({
-         success: false,
-         message: 'Deleted'
-      });
-
-   } catch (error){
-      return res.status(500).json({
-         success: false,
-         message: 'Server error'
-      });
-   }
+		return res.status(200).json({
+			success: false,
+			message: 'Deleted',
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
 };
 
 export const viewBanner = async (req, res) => {
-   try {
-       const bannerId = req.params.id;
+	try {
+		const bannerId = req.params.id;
 
-       const banner = await BannerModel.findById({_id:bannerId});
+		const banner = await BannerModel.findById({ _id: bannerId });
 
-       return res.status(200).json({
-           success: true,
-           message: 'Fetched',
-           data: { banner: banner},
-       });
-   }   catch (error) {
-       return res.status(500).json({
-           success: false,
-           message: 'server error',
-       });
-   }
+		return res.status(200).json({
+			success: true,
+			message: 'Fetched',
+			data: { banner: banner },
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'server error',
+		});
+	}
 };
 
 export const getAllBanner = async (req, res) => {
 	try {
-		const category = await BannerModel.aggregate([
-			// {
-			// 	$lookup: {
-			// 		from: FoodModel.modelName,
-			// 		localField: 'foodId',
-			// 		foreignField: '_id',
-			// 		as: 'food',
-			// 	},
-			// },
-			// {
-			// 	$unwind: '$food',
-			// },
+		const banners = await BannerModel.aggregate([
+			{
+				$lookup: {
+					from: ShopModel.modelName,
+					localField: 'shop',
+					foreignField: '_id',
+					as: 'shop',
+				},
+			},
+			{
+				$unwind: '$shop',
+			},
 
 			{
 				$project: {
-					// foodName: '$food.foodName',
-					product: 1,
-					// bannerImage: 1,
-					// category: '$category.categoryName',
+					shop: '$shop.shopName',
+					image: 1,
 				},
 			},
 		]);
 		return res.status(200).json({
 			success: true,
 			message: 'All Data Fetched',
-			data: { banners: category },
+			data: { banners: banners },
 		});
 	} catch (error) {
 		return res.status(500).json({

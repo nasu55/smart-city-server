@@ -6,8 +6,8 @@ import { createBanner, deleteBanner, getAllBanner, updateBanner, viewBanner } fr
 
 export const BannerRouter = express.Router();
 
-BannerRouter.post('/create',uploadFile("banners").single('bannerImage'), createBanner);
-BannerRouter.put('/update/:id',uploadFile("banners").single('bannerImage'), updateBanner);
+BannerRouter.post('/create',uploadFile("banners").single('image'), createBanner);
+BannerRouter.put('/update/:id',uploadFile("banners").single('image'), updateBanner);
 BannerRouter.delete('/delete/:id', deleteBanner);
 BannerRouter.get('/view/:id', viewBanner);
 BannerRouter.get('/all', getAllBanner);

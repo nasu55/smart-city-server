@@ -39,7 +39,7 @@ const shopSchema = new mongoose.Schema(
 			required: false,
 		},
 		contactNumber: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		deletedAt: {
