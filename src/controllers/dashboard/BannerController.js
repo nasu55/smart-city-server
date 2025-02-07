@@ -2,6 +2,7 @@ import path from 'path';
 import { BannerModel } from '../../models/BannerModel.js';
 import { ProductModel } from '../../models/ProductModel.js';
 import { ShopModel } from '../../models/ShopModel.js';
+import { CategoryModel } from '../../models/Categorymodel.js';
 
 export const createBanner = async (req, res) => {
 	try {
@@ -12,7 +13,7 @@ export const createBanner = async (req, res) => {
 		console.log('imageeee', req.file);
 		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
 		const response = await BannerModel.create({
-			catgeory: category,
+			category: category,
 			shop: shop,
 			image: image,
 		});
@@ -35,13 +36,16 @@ export const createBanner = async (req, res) => {
 export const updateBanner = async (req, res) => {
 	try {
 		const bannerId = req.params.id;
-		const { shop } = req.body;
+		const { shop, category } = req.body;
 		let File = req.body.image;
 		const dataToUpdate = await BannerModel.findById({ _id: bannerId });
-		File = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+		if (req.file) {
+			File = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
+		}
 		console.log(req.file);
 		console.log(req.files);
 
+		dataToUpdate.category = category;
 		dataToUpdate.shop = shop;
 		dataToUpdate.image = File;
 
@@ -81,7 +85,51 @@ export const viewBanner = async (req, res) => {
 	try {
 		const bannerId = req.params.id;
 
-		const banner = await BannerModel.findById({ _id: bannerId });
+		const banner = (
+			await BannerModel.aggregate([
+				{
+					$match: {
+						deletedAt: null,
+					},
+				},
+				{
+					$lookup: {
+						from: CategoryModel.modelName,
+						localField: 'category',
+						foreignField: '_id',
+						as: 'categories',
+					},
+				},
+				{
+					$unwind: {
+						path: '$categories',
+						preserveNullAndEmptyArrays: true,
+					},
+				},
+				{
+					$lookup: {
+						from: ShopModel.modelName,
+						localField: 'shop',
+						foreignField: '_id',
+						as: 'shops',
+					},
+				},
+				{
+					$unwind: {
+						path: '$shops',
+						preserveNullAndEmptyArrays: true,
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						image: 1,
+						shops: 1,
+						categories: 1,
+					},
+				},
+			])
+		).at(0);
 
 		return res.status(200).json({
 			success: true,

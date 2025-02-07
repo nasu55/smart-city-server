@@ -34,6 +34,10 @@ const shopSchema = new mongoose.Schema(
 			type: mongoose.Types.ObjectId,
 			required: false,
 		},
+		category: {
+			type: mongoose.Types.ObjectId,
+			required: false,
+		},
 		email_Id: {
 			type: String,
 			required: false,
@@ -51,10 +55,6 @@ const shopSchema = new mongoose.Schema(
 			type: Boolean,
 			required: false,
 			default: false,
-		},
-		category: {
-			type:  mongoose.Types.ObjectId,
-			required: false,
 		},
 	},
 	{ timestamps: true },
