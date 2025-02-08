@@ -3,6 +3,7 @@ import { ShopModel } from '../../models/ShopModel.js';
 import { CategoryModel } from '../../models/Categorymodel.js';
 import { LocalityModel } from '../../models/LocalityModel.js';
 
+
 export const getAllShops = async (req, res) => {
 	try {
 		const categoryId = req.query.categoryId;
@@ -78,3 +79,28 @@ export const getAllShops = async (req, res) => {
 		});
 	}
 };
+export const favoritedShop = async (req, res, next) => {
+	try {
+		const shopId = req.params.id;
+		const shop = await ShopModel.findOne({ _id: shopId });
+		if (!shop) {
+			return res.status(422).json({
+				success: false,
+				message: 'shop not found',
+			});
+		}
+		shop.isFavorite = shop.isFavorite === true ? false : true;
+		await shop.save();
+
+		res.status(200).json({
+			success: true,
+			message: shop.isFavorite ? 'shop is favourited' : ' shop is not favourited',
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
+};
+

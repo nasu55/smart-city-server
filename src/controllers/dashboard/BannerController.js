@@ -95,56 +95,50 @@ export const viewBanner = async (req, res) => {
 						deletedAt: null,
 					},
 				},
-				{
-					$lookup: {
-						from: CategoryModel.modelName,
-						localField: 'category',
-						foreignField: '_id',
-						as: 'categories',
-						pipeline: [
-							{
-								$match: { deletedAt: null },
-							},
-							{
-								$project: { categoryName: 1 },
-							},
-						],
-					},
-				},
-				{
-					$unwind: {
-						path: '$categories',
-						preserveNullAndEmptyArrays: true,
-					},
-				},
-				{
-					$lookup: {
-						from: ShopModel.modelName,
-						localField: 'shop',
-						foreignField: '_id',
-						as: 'shops',
-						pipeline: [
-							{
-								$match: { deletedAt: null },
-							},
-							{
-								$project: { shopName: 1 },
-							},
-						],
-					},
-				},
-				{
-					$unwind: {
-						path: '$shops',
-						preserveNullAndEmptyArrays: true,
-					},
-				},
+				// {
+				// 	$lookup: {
+				// 		from: CategoryModel.modelName,
+				// 		localField: 'category',
+				// 		foreignField: '_id',
+				// 		as: 'categories',
+				// 		pipeline: [
+				// 			{
+				// 				$match: { deletedAt: null },
+				// 			},
+				// 		],
+				// 	},
+				// },
+				// {
+				// 	$unwind: {
+				// 		path: '$categories',
+				// 		preserveNullAndEmptyArrays: true,
+				// 	},
+				// },
+				// {
+				// 	$lookup: {
+				// 		from: ShopModel.modelName,
+				// 		localField: 'shop',
+				// 		foreignField: '_id',
+				// 		as: 'shops',
+				// 		pipeline: [
+				// 			{
+				// 				$match: { deletedAt: null },
+				// 			},
+				// 		],
+				// 	},
+				// },
+				// {
+				// 	$unwind: {
+				// 		path: '$shops',
+				// 		preserveNullAndEmptyArrays: true,
+				// 	},
+				// },
 				{
 					$project: {
 						// _id: 1,
 						image: 1,
-						shops: 1,
-						categories: 1,
+						shop: 1,
+						category: 1,
 
 					},
 				},
