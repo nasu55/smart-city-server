@@ -1,8 +1,10 @@
 import path from 'path';
-import { BannerModel } from '../../models/BannerModel.js';
+
 import { ProductModel } from '../../models/ProductModel.js';
 import { ShopModel } from '../../models/ShopModel.js';
 import { CategoryModel } from '../../models/Categorymodel.js';
+import { BannerModel } from '../../models/BannerModel.js';
+import mongoose from 'mongoose'; // Ensure mongoose is imported
 
 export const createBanner = async (req, res) => {
 	try {
@@ -89,6 +91,7 @@ export const viewBanner = async (req, res) => {
 			await BannerModel.aggregate([
 				{
 					$match: {
+						_id: new mongoose.Types.ObjectId(bannerId),
 						deletedAt: null,
 					},
 				},
@@ -98,6 +101,14 @@ export const viewBanner = async (req, res) => {
 						localField: 'category',
 						foreignField: '_id',
 						as: 'categories',
+						pipeline: [
+							{
+								$match: { deletedAt: null },
+							},
+							{
+								$project: { categoryName: 1 },
+							},
+						],
 					},
 				},
 				{
@@ -112,6 +123,14 @@ export const viewBanner = async (req, res) => {
 						localField: 'shop',
 						foreignField: '_id',
 						as: 'shops',
+						pipeline: [
+							{
+								$match: { deletedAt: null },
+							},
+							{
+								$project: { shopName: 1 },
+							},
+						],
 					},
 				},
 				{
@@ -122,14 +141,16 @@ export const viewBanner = async (req, res) => {
 				},
 				{
 					$project: {
-						_id: 1,
+						// _id: 1,
 						image: 1,
 						shops: 1,
 						categories: 1,
+
 					},
 				},
 			])
 		).at(0);
+		// console.log('banner::', banner);
 
 		return res.status(200).json({
 			success: true,
@@ -143,6 +164,46 @@ export const viewBanner = async (req, res) => {
 		});
 	}
 };
+
+// export const viewBanner = async (req, res) => {
+// 	try {
+// 		const bannerId = req.params.id;
+
+// 		const banners = await BannerModel.aggregate([
+// 			{
+// 				$match: {
+// 					_id: new mongoose.Types.ObjectId(bannerId),
+// 					deletedAt: null,
+// 				},
+// 			},
+// 			{
+// 				$project: {
+// 					image: 1,
+// 					shop: 1,
+// 					category: 1,
+// 				},
+// 			},
+// 		]);
+
+// 		if (banners.length === 0) {
+// 			return res.status(404).json({
+// 				success: false,
+// 				message: 'Banner not found',
+// 			});
+// 		}
+
+// 		return res.status(200).json({
+// 			success: true,
+// 			message: 'Fetched',
+// 			data: { banner: banners[0] },  // Extract the first banner since it's an array
+// 		});
+// 	} catch (error) {
+// 		return res.status(500).json({
+// 			success: false,
+// 			message: 'Server error',
+// 		});
+// 	}
+// };
 
 export const getAllBanner = async (req, res) => {
 	try {

@@ -10,6 +10,10 @@ const bannerSchema = new mongoose.Schema(
 			type: mongoose.Types.ObjectId,
 			required:false
 		},
+		location:{
+			type: mongoose.Types.ObjectId,
+			required:false
+		},
         image: {
             type: String,
             required:false 

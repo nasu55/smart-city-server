@@ -45,6 +45,7 @@ export const createShop = async (req, res) => {
 		});
 	}
 };
+
 export const updateShop = async (req, res) => {
 	try {
 		const shopId = req.params.id;
@@ -208,11 +209,11 @@ export const getAllShop = async (req, res) => {
 					ownerName: 1,
 					shopDescription: 1,
 					email_Id: 1,
-					location: '$locations.localityName',
-					category: '$categories.categoryName',
+					locations: 1,
+					categories: 1,
 					contactNumber: 1,
 					userName: 1,
-					password: 1,
+					featured:1,
 					image: 1,
 				},
 			},
