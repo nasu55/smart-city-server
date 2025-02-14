@@ -3,7 +3,10 @@ import { CategoryModel } from "../../models/Categorymodel.js";
 
 export const getAllCategories = async (req, res) => {
     try{
-        const categories = await CategoryModel.find();
+        console.log(
+            'callll'
+        )
+        const categories = await CategoryModel.find({deletedAt:null});
         return res.status(200).json({
             success: true,
             message: 'Data Fetched Successfully',

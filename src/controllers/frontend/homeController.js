@@ -16,7 +16,7 @@ export const getHomePage = async (req, res) => {
 			},
 		]);
 
-		const shops = await ShopModel.find({ favorite: true, deletedAt: null });
+		const shops = await ShopModel.find({ featured: true, deletedAt: null });
 
 		return res.status(200).json({
 			success: true,
