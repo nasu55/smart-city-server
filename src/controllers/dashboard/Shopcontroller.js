@@ -14,8 +14,9 @@ export const createShop = async (req, res) => {
 		console.log('reqqqqqqqqqqqqqqqqqqqqqqqqq', req.body);
 		console.log('reqqqqq', req.file);
 
-		const { shopName, shopDescription, ownerName, userName, password, category, email, location, contactNumber } =
+		const { shopName,status, shopDescription, ownerName, userName, password, category, email, location, contactNumber } =
 			req.body;
+			console.log('dataaaa',req.body)
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(password, salt);
 		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
@@ -27,6 +28,7 @@ export const createShop = async (req, res) => {
 			userName: userName,
 			image: image,
 			password: hash,
+			status,
 			email_Id: email,
 			location: location,
 			contactNumber: contactNumber,
@@ -65,6 +67,7 @@ export const updateShop = async (req, res) => {
 		dataToUpdate.location = location;
 		dataToUpdate.contactNumber = contactNumber;
 		dataToUpdate.category = category;
+		dataToUpdate.status = "isApproved"
 
 		await dataToUpdate.save();
 		return res.status(200).json({
@@ -172,6 +175,76 @@ export const getAllShop = async (req, res) => {
 			{
 				$match: {
 					deletedAt: null,
+					status: "isApproved"
+				},
+			},
+			{
+				$lookup: {
+					from: LocalityModel.modelName,
+					localField: 'location',
+					foreignField: '_id',
+					as: 'locations',
+				},
+			},
+			{
+				$unwind: {
+					path: '$locations',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			{
+				$lookup: {
+					from: CategoryModel.modelName,
+					localField: 'category',
+					foreignField: '_id',
+					as: 'categories',
+				},
+			},
+			{
+				$unwind: {
+					path: '$categories',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					shopName: 1,
+					ownerName: 1,
+					shopDescription: 1,
+					email_Id: 1,
+					locations: 1,
+					categories: 1,
+					contactNumber: 1,
+					userName: 1,
+					featured:1,
+					image: 1,
+				},
+			},
+		]);
+
+		// console.log('data:::', shops);
+
+		return res.status(200).json({
+			success: true,
+			message: 'Sucessfull',
+			data: { shops: shops },
+		});
+	} catch (error) {
+		console.log('error', error);
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
+	}
+};
+export const getRegisteredShop = async (req, res) => {
+	try {
+		const shops = await ShopModel.aggregate([
+			{
+				$match: {
+					deletedAt: null,
+					status: "isPending"
 				},
 			},
 			{
@@ -248,6 +321,12 @@ export const shopAuthentication = async (req, res, next) => {
 				message: 'Authentication failed. User not found.',
 			});
 		}
+		if (user.status === "isRejected" || user.status === "isPending") {
+			return res.status(200).json({
+				success: false,
+				message: 'Authentication failed. User is not allowed to log in.',
+			});
+		}
 
 		const isPasswordValid = bcrypt.compareSync(reqPassword, user.password);
 
@@ -295,3 +374,73 @@ export const featuredShop = async (req, res, next) => {
 		});
 	}
 };
+
+export const approveShop = async (req, res) => {
+    try {
+        const ShopId = req.params.id;
+
+        // Find the shop by ID
+        const shop = await ShopModel.findById(ShopId);
+
+        if (!shop) {
+            return res.status(404).json({
+                success: false,
+                message: 'Shop not found',
+            });
+        }
+
+        // Update the status to 'isApproved'
+        shop.status = "isApproved";
+
+        // Save the updated shop
+        await shop.save();
+
+        // Return a success response
+        return res.status(200).json({
+            success: true,
+            message: 'Shop approved successfully',
+        });
+        
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+};
+export const rejectShop = async (req, res) => {
+    try {
+        const ShopId = req.params.id;
+
+        // Find the shop by ID
+        const shop = await ShopModel.findById(ShopId);
+
+        if (!shop) {
+            return res.status(404).json({
+                success: false,
+                message: 'Shop not found',
+            });
+        }
+
+        // Update the status to 'isApproved'
+        shop.status = "isRejected";
+
+        // Save the updated shop
+        await shop.save();
+
+        // Return a success response
+        return res.status(200).json({
+            success: true,
+            message: 'Shop Rejected successfully',
+        });
+        
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+};
+

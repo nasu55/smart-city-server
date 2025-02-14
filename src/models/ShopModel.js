@@ -14,6 +14,12 @@ const shopSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		status: {
+			type: String,
+			required: true,
+			default: 'isPending',
+			enum: ['isRejected', 'isPending', 'isApproved'],
+		},
 		image: {
 			type: String,
 			required: true,
