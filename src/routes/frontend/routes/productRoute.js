@@ -4,5 +4,5 @@ import { shopAuthMiddleware } from "../../../middleware/ShopMiddleware.js";
 
 
 export const productRoute = express.Router();
-productRoute.get('/all',shopAuthMiddleware,getAllProducts); 
+productRoute.get('/all',getAllProducts); 
 

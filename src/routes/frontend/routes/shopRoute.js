@@ -1,9 +1,14 @@
-import express from "express";
-import { favoritedShop, getAllShops, getFeaturedShops } from "../../../controllers/frontend/shopController.js";
-
+import express from 'express';
+import {
+	getAllShops,
+	getFavourite,
+	getFeaturedShops,
+	postFavourite,
+} from '../../../controllers/frontend/shopController.js';
+import { authMiddleware } from '../../../middleware/UserMiddleware.js';
 
 export const shopRoute = express.Router();
-shopRoute.get('/all',getAllShops); 
-shopRoute.put('/favourite/:id',favoritedShop); 
-shopRoute.get('/featured',getFeaturedShops); 
-
+shopRoute.get('/all', getAllShops);
+shopRoute.get('/favourites', authMiddleware, getFavourite);
+shopRoute.post('/favourites', authMiddleware, postFavourite);
+shopRoute.get('/featured', getFeaturedShops);
