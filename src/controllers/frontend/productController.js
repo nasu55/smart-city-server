@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ProductModel } from '../../models/ProductModel.js';
 import { BannerModel } from '../../models/BannerModel.js';
+import { CartModel } from '../../models/CartModel.js';
 
 // export const getAllProducts = async (req, res) => {
 // 	try {
@@ -75,25 +76,93 @@ import { BannerModel } from '../../models/BannerModel.js';
 // 	}
 // };
 
-
 export const getAllProducts = async (req, res) => {
-	try{
+	try {
+		const shopId = req.query.shopId;
+		console.log('userrrid',req.user)
+		const userId = req.user;
 
-		const shopId = req.query.shopId
+		// const products = await ProductModel.find({deletedAt:null, storeId : shopId});
+		const products = await ProductModel.aggregate([
+			{
+				$match: {
+					deletedAt: null,
+					// userId : userId,
+					storeId: new mongoose.Types.ObjectId(shopId),
+				},
+			},
+			
 	
-		const products = await ProductModel.find({deletedAt:null, storeId : shopId});
-		const banner = await BannerModel.find({ shop: shopId,deletedAt:null })
-		
-		
+			{
+				$lookup: {
+					from: CartModel.modelName,
+					localField: '_id',
+					foreignField: 'productId',
+					
+					pipeline: [
+						{
+							$match: {
+								userId : userId 
+							} 
+						},
+						{
+							$project: {
+								quantity:1,
+								_id:0
+							},
+						},
+					],
+					as: 'carts',
+				},
+			},
+			{
+				$unwind: {
+					path: '$carts',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			// {
+			// 	$lookup:{
+			// 		from: BannerModel.modelName,
+			// 		localField: 'storeId',
+			// 		foreignField: 'shop',
+					
+			// 		// pipeline: [
+			// 		// 	{
+			// 		// 		$project: {
+			// 		// 			quantity:1,
+			// 		// 			_id:0
+			// 		// 		},
+			// 		// 	},
+			// 		// ],
+			// 		as: 'banner',
+			// 	}
+			// },
+			{
+				$project :{
+					storeId: 1,
+					productName: 1,
+					image: 1,
+					description: 1,
+					mrp: 1,
+					price: 1,
+					quantity: "$carts.quantity",
+					banner:1
+				}
+			}
+			
+		]);
+
+		const banner = await BannerModel.find({
+			deletedAt:null, shop:shopId
+		})
+
 		return res.status(200).json({
 			success: true,
 			message: 'Data Fetched Successfully',
-			data:{products:products,banner:banner}
+			data: { products: products,banner:banner },
 		});
-
-
-
-	}catch (error) { 
+	} catch (error) {
 		console.log(error)
 		return res.status(500).json({
 			success: false,
