@@ -5,5 +5,5 @@ import { authMiddleware } from "../../../middleware/UserMiddleware.js";
 
 
 export const productRoute = express.Router();
-productRoute.get('/all',authMiddleware, getAllProducts); 
+productRoute.get('/all', authMiddleware, getAllProducts); 
 

@@ -4,8 +4,8 @@ import { ProductModel } from '../../models/ProductModel.js';
 
 export const createCart = async (req, res) => {
 	try {
-		// const {userId} = req.user
-		const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
+		const {userId} = req.user
+		// const userId = new mongoose.Types.ObjectId('67b80e189ab4b6841a087697');
 		const { productId, shopId, quantity } = req.body;
 
 
@@ -23,13 +23,6 @@ export const createCart = async (req, res) => {
                 quantity: quantity, 
             });
         }
-
-		// await CartModel.create({
-		// 	userId: userId,
-		// 	shopId: shopId,
-		// 	productId: productId,
-		// 	quantity: quantity,
-		// });
 
 		const carts = await CartModel.aggregate([
 			{
@@ -63,6 +56,7 @@ export const createCart = async (req, res) => {
 
 			{
 				$project: {
+					products:1,
 					_id: '$products._id',
 					quantity: 1,
 					mrp: '$products.mrp',
@@ -124,8 +118,8 @@ export const createCart = async (req, res) => {
 
 export const getAllCarts = async (req, res) => {
 	try {
-		// const { userId } = req.user;
-		const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
+		const { userId } = req.user;
+		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 
 
 		const carts = await CartModel.aggregate([
@@ -167,6 +161,7 @@ export const getAllCarts = async (req, res) => {
 					price: '$products.price',
 					productName: '$products.productName',
 					image: '$products.image',
+					storeId: '$products.storeId'
 				},
 			},
 		]);
@@ -184,6 +179,8 @@ export const getAllCarts = async (req, res) => {
 			// Accumulate the subtotal and grandTotal
 			subtotal += itemSubtotal;
 			grandTotal += itemGrandTotal;
+
+			console.log(cart)
 
 			return {
 				...cart,
@@ -211,10 +208,11 @@ export const getAllCarts = async (req, res) => {
 			},
 		});
 	} catch (error) {
-		return res.status(500).json({
-			success: false,
-			message: 'Server error',
-		});
+		console.log(error)
+		// return res.status(500).json({
+		// 	success: false,
+		// 	message: 'Server error',
+		// });
 	}
 };
 export const deleteOne = async (req, res) => {

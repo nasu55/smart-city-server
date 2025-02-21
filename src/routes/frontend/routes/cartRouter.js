@@ -5,8 +5,8 @@ import { authMiddleware } from "../../../middleware/UserMiddleware.js";
 
 
 export const cartRoute = express.Router();
-cartRoute.post('/',createCart); 
-cartRoute.get('/get-all',getAllCarts);
+cartRoute.post('/',authMiddleware,createCart); 
+cartRoute.get('/',authMiddleware,getAllCarts);
 cartRoute.get('/delete-all',authMiddleware,deleteMany);
 cartRoute.get('/delete-one',authMiddleware,deleteOne);
 cartRoute.get('/quantity',authMiddleware,quantityChange);

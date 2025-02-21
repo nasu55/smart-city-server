@@ -5,6 +5,7 @@ export const authMiddleware = (req, res, next) => {
 
 
 	const authHeader = req.headers.authorization;
+	console.log('tokennnnnnnnnnnnnn',authHeader)
 
 	if (!authHeader) {
 		return res.status(401).json({
@@ -32,7 +33,8 @@ export const authMiddleware = (req, res, next) => {
 
 		next();
 	} catch (error) {
-		return next(unauthorizedError('Token expired'));
+		// return next(unauthorizedError('Token expired'));
+		console.log('error',error)
 
 	}
 };
