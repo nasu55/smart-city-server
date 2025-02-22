@@ -12,6 +12,11 @@ export const getAllShops = async (req, res) => {
 		// Get categoryId from query params
 		const categoryId = req.query.categoryId;
 
+		let match;
+if (search) {
+	match['shopName'] = { $regex: search, $options: 'i' };  // Case-insensitive search
+  }
+
 		// Start building the aggregation pipeline
 		const matchStage = {
 			deletedAt: null,
@@ -24,6 +29,9 @@ export const getAllShops = async (req, res) => {
 		}
 
 		const shops = await ShopModel.aggregate([
+			{
+				$match: match, // Use the dynamic match stage
+			},
 			{
 				$match: matchStage, // Use the dynamic match stage
 			},
