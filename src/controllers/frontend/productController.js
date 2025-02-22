@@ -79,11 +79,19 @@ import { CartModel } from '../../models/CartModel.js';
 export const getAllProducts = async (req, res) => {
 	try {
 		const shopId = req.query.shopId;
-		console.log('userrrid',req.user)
+		const {search} = req.query;
+		
 		const userId = req.user;
+let match;
+if (search) {
+	match['productName'] = { $regex: search, $options: 'i' };  // Case-insensitive search
+  }
 
 		// const products = await ProductModel.find({deletedAt:null, storeId : shopId});
 		const products = await ProductModel.aggregate([
+			{
+				$match:match
+			},
 			{
 				$match: {
 					deletedAt: null,
