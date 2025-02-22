@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const orderSchema = new mongoose.Schema(
 	{
 		orderdate: {
-			type: String,
+			type: Date,
 			required: true,
 		},
 		userId: {
@@ -50,11 +50,7 @@ const orderSchema = new mongoose.Schema(
 			},
 		},
 
-		status: {
-			type: Boolean,
-			default: false,
-			required: true,
-		},
+	
 
 		deletedAt: {
 			type: Date,
