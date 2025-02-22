@@ -83,15 +83,12 @@ export const getAllProducts = async (req, res) => {
 		
 		const userId = req.user;
 let match;
-if (search) {
-	match['productName'] = { $regex: search, $options: 'i' };  // Case-insensitive search
-  }
+		if(search){
+match.productName ={regex : search , options: 'i'}
+		}
 
 		// const products = await ProductModel.find({deletedAt:null, storeId : shopId});
 		const products = await ProductModel.aggregate([
-			{
-				$match:match
-			},
 			{
 				$match: {
 					deletedAt: null,

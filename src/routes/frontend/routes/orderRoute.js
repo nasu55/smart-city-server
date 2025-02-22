@@ -6,8 +6,8 @@ import { shopAuthMiddleware } from "../../../middleware/ShopMiddleware.js";
 
 
 export const orderRoute = express.Router();
-orderRoute.post('/', createOrder); 
-orderRoute.get('/', getAllOrdersForUser); 
+orderRoute.post('/', authMiddleware, createOrder); 
+orderRoute.get('/',authMiddleware, getAllOrdersForUser); 
 orderRoute.get('/:orderId',getOrderbyId); 
 orderRoute.get('/all-orders',shopAuthMiddleware, getAllOrdersForShop); 
 

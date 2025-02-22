@@ -6,8 +6,9 @@ import { ShopModel } from '../../models/ShopModel.js';
 
 export const createOrder = async (req, res, next) => {
 	try {
-		// const { userId } = req.user;
-		const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
+		const { userId } = req.user;
+		console.log(req.user)
+		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 
 		const carts = await CartModel.aggregate([
 			{
@@ -108,8 +109,9 @@ export const createOrder = async (req, res, next) => {
 
 export const getAllOrdersForUser = async (req, res) => {
 	try {
-	  // const userId = req.user;
-	  const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
+	  const {userId} = req.user;
+	  console.log('iddddddddddddd',userId)
+	//   const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
   
 	  if (!userId) {
 		return res.status(400).json({
@@ -188,13 +190,13 @@ export const getAllOrdersForUser = async (req, res) => {
 		},
 	  ]);
   
-	  // If no orders are found for the user, send an appropriate message
-	  if (orders.length === 0) {
-		return res.status(404).json({
-		  success: false,
-		  message: 'No orders found for this user.',
-		});
-	  }
+	//   // If no orders are found for the user, send an appropriate message
+	//   if (orders.length === 0) {
+	// 	return res.status(404).json({
+	// 	  success: false,
+	// 	  message: 'No orders found for this user.',
+	// 	});
+	//   }
   
 	  // Return the result
 	  res.status(200).json({
@@ -219,7 +221,7 @@ export const getAllOrdersForUser = async (req, res) => {
 export const getOrderbyId = async (req, res) => {
 	try {
 	  const { orderId } = req.params;  // Fetch orderId from request params
-	  const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
+	//   const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
   
 	  if (!orderId) {
 		return res.status(400).json({
