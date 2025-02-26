@@ -222,10 +222,10 @@ export const getAllOrdersForUser = async (req, res) => {
 export const getOrderbyId = async (req, res) => {
 	try {
 	  const { orderId } = req.params; 
-	//   const { userId } = req.user;
+	  const { userId } = req.user;
 
 	   // Fetch orderId from request params
-	  const userId = '67933c82531c7919c546e8b3'; 
+	//   const userId = '67933c82531c7919c546e8b3'; 
   
 	  if (!orderId) {
 		return res.status(400).json({
