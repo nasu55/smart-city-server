@@ -287,7 +287,7 @@ export const postFavourite = async (req, res) => {
 	try {
 		const userId = req.user;
 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
-		const shopId = req.query.shopId;
+		const {shopId} = req.body;
 		// console.log(shopId);
 
 		const favouriteShop = await FavouriteShopModel.create({
