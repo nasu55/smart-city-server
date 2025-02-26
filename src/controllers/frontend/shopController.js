@@ -11,11 +11,9 @@ export const getAllShops = async (req, res) => {
 
 		// Get categoryId from query params
 		const categoryId = req.query.categoryId;
+		
 
-		let match;
-if (search) {
-	match['shopName'] = { $regex: search, $options: 'i' };  // Case-insensitive search
-  }
+	
 
 		// Start building the aggregation pipeline
 		const matchStage = {
@@ -29,9 +27,7 @@ if (search) {
 		}
 
 		const shops = await ShopModel.aggregate([
-			{
-				$match: match, // Use the dynamic match stage
-			},
+		
 			{
 				$match: matchStage, // Use the dynamic match stage
 			},
@@ -285,10 +281,10 @@ export const getFeaturedShops = async (req, res) => {
 
 export const postFavourite = async (req, res) => {
 	try {
-		const userId = req.user;
+		const {userId} = req.user;
 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 		const {shopId} = req.body;
-		// console.log(shopId);
+		console.log(shopId);
 
 		const favouriteShop = await FavouriteShopModel.create({
 			userId: userId,

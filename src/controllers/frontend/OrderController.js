@@ -244,57 +244,226 @@ export const getOrderbyId = async (req, res) => {
 	  }
   
 	  // Aggregate query to fetch order, product, and shop details
-	  const orderDetails = await OrderModel.aggregate([
+	//   const orderDetails = await OrderModel.aggregate([
+	// 	{
+	// 	  $match: {
+	// 		_id: new mongoose.Types.ObjectId(orderId),  // Match by orderId
+	// 		userId: new mongoose.Types.ObjectId(userId), // Match by userId
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: '$cart',  // Unwind the cart array to process each product
+	// 	},
+	// 	{
+	// 	  $lookup: {
+	// 		from: ProductModel.modelName, // Lookup ProductModel to get product details
+	// 		localField: 'cart.productId',  // Match cart's productId field with ProductModel _id
+	// 		foreignField: '_id',
+	// 		as: 'productDetails',
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: {
+	// 		path: '$productDetails',  // Unwind product details
+	// 		preserveNullAndEmptyArrays: true,
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $lookup: {
+	// 		from: ShopModel.modelName,  // Lookup ShopModel to get shop details
+	// 		localField: 'productDetails.storeId',  // Match storeId in ProductModel to ShopModel _id
+	// 		foreignField: '_id',
+	// 		as: 'shopDetails',
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: {
+	// 		path: '$shopDetails',  // Unwind shop details
+	// 		preserveNullAndEmptyArrays: true,
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $group: {
+	// 		_id: '$_id',  // Group by order ID to consolidate products
+	// 		orderId: { $first: '$_id' },
+	// 		orderDate: { $first: '$orderdate' },
+	// 		// amount: { $first: '$amount' },
+	// 		grandTotal: '$amount[0].grandTotal',
+	// 		grandTotalWithTax: '$amount[0].grandTotalWithTax',
+	// 		tax: '$amount[0].tax',
+	// 		subtotal: '$amount[0].subtotal',
+	// 		discount: '$amount[0].discount',
+	// 		shopDetails: { $first: '$shopDetails' },
+	// 		products: {  // Group all products into an array
+	// 		  $push: {
+	// 			productId: '$productDetails._id',
+	// 			productName: '$productDetails.productName',
+	// 			image: '$productDetails.image',
+	// 			description: '$productDetails.description',
+	// 			mrp: '$productDetails.mrp',
+	// 			price: '$productDetails.price',
+	// 			quantity: '$cart.quantity',
+	// 		  },
+	// 		},
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $project: {
+	// 		_id: 0,  // Hide the default MongoDB _id
+	// 		orderId: 1,
+	// 		orderDate: 1,
+	// 		amount: 1,
+	// 		products: 1,
+	// 		shopDetails: {
+	// 		  _id: 1,
+	// 		  shopName: 1,
+	// 		  shopDescription: 1,
+	// 		  ownerName: 1,
+	// 		  image: 1,
+	// 		  email_Id: 1,
+	// 		  contactNumber: 1,
+	// 		},
+	// 	  },
+	// 	},
+	//   ]);
+  
+
+	// const orderDetails = await OrderModel.aggregate([
+	// 	{
+	// 	  $match: {
+	// 		_id: new mongoose.Types.ObjectId(orderId), // Match by orderId
+	// 		userId: new mongoose.Types.ObjectId(userId), // Match by userId
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: '$cart', // Unwind the cart array to process each product
+	// 	},
+	// 	{
+	// 	  $lookup: {
+	// 		from: ProductModel.modelName, // Lookup ProductModel to get product details
+	// 		localField: 'cart.productId', // Match cart's productId field with ProductModel _id
+	// 		foreignField: '_id',
+	// 		as: 'productDetails',
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: {
+	// 		path: '$productDetails', // Unwind product details
+	// 		preserveNullAndEmptyArrays: true,
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $lookup: {
+	// 		from: ShopModel.modelName, // Lookup ShopModel to get shop details
+	// 		localField: 'productDetails.storeId', // Match storeId in ProductModel to ShopModel _id
+	// 		foreignField: '_id',
+	// 		as: 'shopDetails',
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $unwind: {
+	// 		path: '$shopDetails', // Unwind shop details
+	// 		preserveNullAndEmptyArrays: true,
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $group: {
+	// 		_id: '$_id', // Group by order ID to consolidate products
+	// 		orderId: { $first: '$_id' },
+	// 		orderDate: { $first: '$orderdate' },
+	// 		grandTotal: { $first: { $arrayElemAt: ['$amount.grandTotal', 0] } }, // Accessing the first element of the array
+	// 		grandTotalWithTax: { $first: { $arrayElemAt: ['$amount.grandTotalWithTax', 0] } },
+	// 		tax: { $first: { $arrayElemAt: ['$amount.tax', 0] } },
+	// 		subtotal: { $first: { $arrayElemAt: ['$amount.subtotal', 0] } },
+	// 		discount: { $first: { $arrayElemAt: ['$amount.discount', 0] } },
+	// 		shopDetails: { $first: '$shopDetails' },
+	// 		products: { // Group all products into an array
+	// 		  $push: {
+	// 			productId: '$productDetails._id',
+	// 			productName: '$productDetails.productName',
+	// 			image: '$productDetails.image',
+	// 			description: '$productDetails.description',
+	// 			mrp: '$productDetails.mrp',
+	// 			price: '$productDetails.price',
+	// 			quantity: '$cart.quantity',
+	// 		  },
+	// 		},
+	// 	  },
+	// 	},
+	// 	{
+	// 	  $project: {
+	// 		_id: 0, // Hide the default MongoDB _id
+	// 		orderId: 1,
+	// 		orderDate: 1,
+	// 		grandTotal: 1,
+	// 		grandTotalWithTax: 1,
+	// 		tax: 1,
+	// 		subtotal: 1,
+	// 		discount: 1,
+	// 		products: 1,
+	// 		shopDetails: {
+	// 		  _id: 1,
+	// 		  shopName: 1,
+	// 		  shopDescription: 1,
+	// 		  ownerName: 1,
+	// 		  image: 1,
+	// 		  email_Id: 1,
+	// 		  contactNumber: 1,
+	// 		},
+	// 	  },
+	// 	},
+	//   ]);
+
+	const orderDetails = await OrderModel.aggregate([
 		{
 		  $match: {
-			_id: new mongoose.Types.ObjectId(orderId),  // Match by orderId
+			_id: new mongoose.Types.ObjectId(orderId), // Match by orderId
 			userId: new mongoose.Types.ObjectId(userId), // Match by userId
 		  },
 		},
 		{
-		  $unwind: '$cart',  // Unwind the cart array to process each product
+		  $unwind: '$cart', // Unwind the cart array to process each product
 		},
 		{
 		  $lookup: {
 			from: ProductModel.modelName, // Lookup ProductModel to get product details
-			localField: 'cart.productId',  // Match cart's productId field with ProductModel _id
+			localField: 'cart.productId', // Match cart's productId field with ProductModel _id
 			foreignField: '_id',
 			as: 'productDetails',
 		  },
 		},
 		{
 		  $unwind: {
-			path: '$productDetails',  // Unwind product details
+			path: '$productDetails', // Unwind product details
 			preserveNullAndEmptyArrays: true,
 		  },
 		},
 		{
 		  $lookup: {
-			from: ShopModel.modelName,  // Lookup ShopModel to get shop details
-			localField: 'productDetails.storeId',  // Match storeId in ProductModel to ShopModel _id
+			from: ShopModel.modelName, // Lookup ShopModel to get shop details
+			localField: 'productDetails.storeId', // Match storeId in ProductModel to ShopModel _id
 			foreignField: '_id',
 			as: 'shopDetails',
 		  },
 		},
 		{
 		  $unwind: {
-			path: '$shopDetails',  // Unwind shop details
+			path: '$shopDetails', // Unwind shop details
 			preserveNullAndEmptyArrays: true,
 		  },
 		},
 		{
 		  $group: {
-			_id: '$_id',  // Group by order ID to consolidate products
+			_id: '$_id', // Group by order ID to consolidate products
 			orderId: { $first: '$_id' },
 			orderDate: { $first: '$orderdate' },
-			// amount: { $first: '$amount' },
-			grandTotal: '$amount[0].grandTotal',
-			grandTotalWithTax: '$amount[0].grandTotalWithTax',
-			tax: '$amount[0].tax',
-			subtotal: '$amount[0].subtotal',
-			discount: '$amount[0].discount',
+			grandTotal: { $first: '$amount.grandTotal' }, // Directly access the field
+			grandTotalWithTax: { $first: '$amount.grandTotalWithTax' },
+			tax: { $first: '$amount.tax' },
+			subtotal: { $first: '$amount.subtotal' },
+			discount: { $first: '$amount.discount' },
 			shopDetails: { $first: '$shopDetails' },
-			products: {  // Group all products into an array
+			products: { // Group all products into an array
 			  $push: {
 				productId: '$productDetails._id',
 				productName: '$productDetails.productName',
@@ -309,10 +478,14 @@ export const getOrderbyId = async (req, res) => {
 		},
 		{
 		  $project: {
-			_id: 0,  // Hide the default MongoDB _id
+			_id: 0, // Hide the default MongoDB _id
 			orderId: 1,
 			orderDate: 1,
-			amount: 1,
+			grandTotal: 1,
+			grandTotalWithTax: 1,
+			tax: 1,
+			subtotal: 1,
+			discount: 1,
 			products: 1,
 			shopDetails: {
 			  _id: 1,
@@ -326,7 +499,8 @@ export const getOrderbyId = async (req, res) => {
 		  },
 		},
 	  ]);
-  
+	  
+	  
 	  // If no orders found, return a 404 response
 	  if (orderDetails.length === 0) {
 		return res.status(404).json({
