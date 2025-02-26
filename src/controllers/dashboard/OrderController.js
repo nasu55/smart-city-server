@@ -6,9 +6,11 @@ import { UserModel } from '../../models/UserModel.js';
 
 export const getAllOrdersForShop = async (req, res) => {
 	try {
-		const { shopId } = req.user; // Replace with actual shopId
+		console.log('call')
+		const { userId } = req.user; // Replace with actual shopId
+		console.log("🚀 ~ getAllOrdersForShop ~ shopId:", req.user)
 
-		if (!shopId) {
+		if (!userId) {
 			return res.status(400).json({
 				success: false,
 				message: 'Shop ID is required.',
@@ -18,12 +20,12 @@ export const getAllOrdersForShop = async (req, res) => {
 		const orders = await OrderModel.aggregate([
 			{
 				$match: {
-					storeId: shopId,
+					storeId:new mongoose.Types.ObjectId(userId),
 				},
 			},
 			{
 				$lookup: {
-					from: 'users',
+					from: UserModel.modelName,
 					localField: 'userId',
 					foreignField: '_id',
 					as: 'userDetails',
@@ -60,28 +62,9 @@ export const getAllOrdersForShop = async (req, res) => {
 				},
 			},
 
-			// Lookup shop details
-			{
-				$lookup: {
-					from: 'shops',
-					localField: 'productDetails.storeId',
-					foreignField: '_id',
-					as: 'shopDetails',
-				},
-			},
-			{
-				$unwind: {
-					path: '$shopDetails',
-					preserveNullAndEmptyArrays: true,
-				},
-			},
+	
 
-			// Match the correct shop
-			{
-				$match: {
-					'shopDetails._id': shopId,
-				},
-			},
+		
 
 			// Restructure data
 			{
@@ -92,7 +75,6 @@ export const getAllOrdersForShop = async (req, res) => {
 					status: { $first: '$status' },
 					userDetails: { $first: '$userDetails' },
 					grandTotalWithTax: { $first: '$amount.grandTotalWithTax' },
-					shopDetails: { $first: '$shopDetails' },
 					products: {
 						$push: {
 							productId: '$productDetails._id',
@@ -106,6 +88,7 @@ export const getAllOrdersForShop = async (req, res) => {
 				},
 			},
 		]);
+		console.log("🚀 ~ getAllOrdersForShop ~ orders:", orders)
 
 		if (orders.length === 0) {
 			return res.status(404).json({

@@ -3,7 +3,6 @@ import env from "../../env.js";
 
 export const shopAuthMiddleware = (req, res, next) => {
 
-console.log(req.headers)
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader) {

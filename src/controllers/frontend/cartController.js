@@ -8,6 +8,10 @@ export const createCart = async (req, res) => {
 		// const userId = new mongoose.Types.ObjectId('67b80e189ab4b6841a087697');
 		const { productId, shopId, quantity } = req.body;
 
+		if (quantity==0 ){
+			return res.status(400).json({ message: 'Quantity cannot be 0' });
+		};
+
 
 
         const existingItem = await CartModel.findOne({ userId, productId });
@@ -272,3 +276,5 @@ export const quantityChange = async (req, res) => {
 		});
 	}
 };
+
+

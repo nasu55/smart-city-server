@@ -98,6 +98,8 @@ export const createOrder = async (req, res, next) => {
 			storeId : carts[0].storeId,
 		});
 
+		await CartModel.deleteMany({userId:userId})
+
 		res.status(200).json({
 			success: true,
 			message: 'Order created successfully',

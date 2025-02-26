@@ -8,7 +8,7 @@ export const cartRoute = express.Router();
 cartRoute.post('/',authMiddleware,createCart); 
 cartRoute.get('/',authMiddleware,getAllCarts);
 cartRoute.get('/delete-all',authMiddleware,deleteMany);
-cartRoute.get('/delete-one',authMiddleware,deleteOne);
+cartRoute.post('/delete-one',authMiddleware,deleteOne);
 cartRoute.get('/quantity',authMiddleware,quantityChange);
 
 
