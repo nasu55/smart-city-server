@@ -287,7 +287,12 @@ export const getOrderbyId = async (req, res) => {
 			_id: '$_id',  // Group by order ID to consolidate products
 			orderId: { $first: '$_id' },
 			orderDate: { $first: '$orderdate' },
-			amount: { $first: '$amount' },
+			// amount: { $first: '$amount' },
+			grandTotal: '$amount[0].grandTotal',
+			grandTotalWithTax: '$amount[0].grandTotalWithTax',
+			tax: '$amount[0].tax',
+			subtotal: '$amount[0].subtotal',
+			discount: '$amount[0].discount',
 			shopDetails: { $first: '$shopDetails' },
 			products: {  // Group all products into an array
 			  $push: {
