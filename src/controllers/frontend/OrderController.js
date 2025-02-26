@@ -192,7 +192,7 @@ export const getAllOrdersForUser = async (req, res) => {
 			  image: 1,
 			  email_Id: 1,
 			  contactNumber: 1,
-			  userName: 1,
+		
 			  location: 1,
 			  category: 1,
 			},

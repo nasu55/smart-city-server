@@ -223,8 +223,10 @@ export const getAllCarts = async (req, res) => {
 export const deleteOne = async (req, res) => {
 	try {
 		const { userId } = req.user;
+		console.log("🚀 ~ deleteOne ~ userId:", userId)
 		const { productId } = req.body;
 		const carts = await CartModel.deleteOne({ userId: userId, productId: productId });
+		console.log("🚀 ~ deleteOne ~ productId:", productId)
 
 		return res.status(200).json({
 			success: true,

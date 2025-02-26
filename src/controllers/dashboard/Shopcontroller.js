@@ -10,13 +10,10 @@ import { CategoryModel } from '../../models/Categorymodel.js';
 
 export const createShop = async (req, res) => {
 	try {
-		console.log('callllll');
-		console.log('reqqqqqqqqqqqqqqqqqqqqqqqqq', req.body);
-		console.log('reqqqqq', req.file);
+	
 
-		const { shopName,status, shopDescription, ownerName, userName, password, category, email, location, contactNumber } =
+		const { shopName,status, shopDescription, ownerName, password, category, email, location, contactNumber } =
 			req.body;
-			console.log('dataaaa',req.body)
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(password, salt);
 		let image = 'uploads' + req.file?.path.split(path.sep + 'uploads').at(1);
@@ -25,7 +22,7 @@ export const createShop = async (req, res) => {
 			shopName: shopName,
 			shopDescription: shopDescription,
 			ownerName: ownerName,
-			userName: userName,
+		
 			image: image,
 			password: hash,
 			status,
@@ -216,7 +213,7 @@ export const getAllShop = async (req, res) => {
 					locations: 1,
 					categories: 1,
 					contactNumber: 1,
-					userName: 1,
+					
 					featured:1,
 					image: 1,
 				},
@@ -285,7 +282,7 @@ export const getRegisteredShop = async (req, res) => {
 					locations: 1,
 					categories: 1,
 					contactNumber: 1,
-					userName: 1,
+				
 					featured:1,
 					image: 1,
 				},

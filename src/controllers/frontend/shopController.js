@@ -81,7 +81,7 @@ if (search) {
 					location: '$locations.localityName',
 					category: '$categories.categoryName',
 					contactNumber: 1,
-					userName: 1,
+			
 					image: 1,
 					isFavorite: 1,
 				},
@@ -240,7 +240,7 @@ export const getFeaturedShops = async (req, res) => {
 					category: '$categories.categoryName',
 					contactNumber: 1,
 					isFavorite: 1,
-					userName: 1,
+			
 					image: 1,
 				},
 			},
