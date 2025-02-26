@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 import { OrderModel } from '../../models/OrderModel.js';
 import { ProductModel } from '../../models/ProductModel.js';
 import { ShopModel } from '../../models/ShopModel.js';
+import { UserModel } from '../../models/UserModel.js';
 
 export const getAllOrdersForShop = async (req, res) => {
 	try {
-		// const shopId = new mongoose.Types.ObjectId("67b021526601956f7cbe9f2e"); // Replace with actual shopId
-		const shopId = req.user;
+		const { shopId } = req.user; // Replace with actual shopId
 
 		if (!shopId) {
 			return res.status(400).json({
@@ -15,66 +15,98 @@ export const getAllOrdersForShop = async (req, res) => {
 			});
 		}
 
-		// Aggregate query to get all orders for a specific shop
 		const orders = await OrderModel.aggregate([
 			{
-				$unwind: '$cart', // Unwind the cart array to process each product individually
+				$match: {
+					storeId: shopId,
+				},
 			},
 			{
 				$lookup: {
-					from: ProductModel.modelName, // Lookup the ProductModel to get product details
-					localField: 'cart.productId', // Match cart's productId field with ProductModel _id
+					from: 'users',
+					localField: 'userId',
+					foreignField: '_id',
+					as: 'userDetails',
+				},
+			},
+			{
+				$unwind: {
+					path: '$userDetails',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+
+			// Unwind the cart to access individual products
+			{
+				$unwind: {
+					path: '$cart',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+
+			// Lookup product details
+			{
+				$lookup: {
+					from: 'products',
+					localField: 'cart.productId',
 					foreignField: '_id',
 					as: 'productDetails',
 				},
 			},
 			{
 				$unwind: {
-					path: '$productDetails', // Flatten the product details
-					preserveNullAndEmptyArrays: true, // Preserve null if product not found
+					path: '$productDetails',
+					preserveNullAndEmptyArrays: true,
 				},
 			},
+
+			// Lookup shop details
 			{
 				$lookup: {
-					from: ShopModel.modelName, // Lookup the ShopModel to get shop details
-					localField: 'productDetails.storeId', // Match storeId in ProductModel to ShopModel _id
+					from: 'shops',
+					localField: 'productDetails.storeId',
 					foreignField: '_id',
 					as: 'shopDetails',
 				},
 			},
 			{
 				$unwind: {
-					path: '$shopDetails', // Flatten shop details
-					preserveNullAndEmptyArrays: true, // Preserve null if shop not found
+					path: '$shopDetails',
+					preserveNullAndEmptyArrays: true,
 				},
 			},
+
+			// Match the correct shop
 			{
 				$match: {
-					'shopDetails._id': shopId, // Filter by shopId to get orders for the specific shop
+					'shopDetails._id': shopId,
 				},
 			},
+
+			// Restructure data
 			{
-				$project: {
-					orderId: 1,
-					orderDate: 1,
-					status: 1,
-					//   shopDetails:1,
-					//   productDetails:1,
-					'amount.grandTotalWithTax': 1,
-					'cart.productId': 1,
-					'cart.quantity': 1,
-					'cart.price': 1,
-					'productDetails.productName': 1,
-					'productDetails.price': 1,
-					'productDetails.image': 1,
-					'shopDetails.shopName': 1,
-					'shopDetails.contactNumber': 1,
-					'shopDetails.location': 1,
+				$group: {
+					_id: '$_id',
+					orderId: { $first: '$_id' },
+					orderDate: { $first: '$orderdate' },
+					status: { $first: '$status' },
+					userDetails: { $first: '$userDetails' },
+					grandTotalWithTax: { $first: '$amount.grandTotalWithTax' },
+					shopDetails: { $first: '$shopDetails' },
+					products: {
+						$push: {
+							productId: '$productDetails._id',
+							productName: '$productDetails.productName',
+							price: '$productDetails.price',
+							image: '$productDetails.image',
+							quantity: '$cart.quantity',
+							itemPrice: '$cart.price',
+						},
+					},
 				},
 			},
 		]);
 
-		// If no orders are found, send an appropriate message
 		if (orders.length === 0) {
 			return res.status(404).json({
 				success: false,
@@ -82,14 +114,13 @@ export const getAllOrdersForShop = async (req, res) => {
 			});
 		}
 
-		// Return the result
 		res.status(200).json({
 			success: true,
 			message: 'Orders fetched successfully',
 			data: orders,
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			success: false,
 			message: 'Error fetching orders',

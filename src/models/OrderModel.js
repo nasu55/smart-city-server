@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema(
 				},
 			},
 		],
+		storeId: {
+			type: mongoose.Types.ObjectId,
+			required: true,
+		},
 
 		amount: {
 			subtotal: {

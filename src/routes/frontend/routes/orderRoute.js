@@ -9,5 +9,4 @@ export const orderRoute = express.Router();
 orderRoute.post('/', authMiddleware, createOrder); 
 orderRoute.get('/',authMiddleware, getAllOrdersForUser); 
 orderRoute.get('/:orderId',getOrderbyId); 
-orderRoute.get('/all-orders',shopAuthMiddleware, getAllOrdersForShop); 
 

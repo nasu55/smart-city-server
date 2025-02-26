@@ -48,9 +48,13 @@ export const createOrder = async (req, res, next) => {
 					price: '$products.price',
 					productName: '$products.productName',
 					image: '$products.image',
+					storeId : '$products.storeId'
 				},
 			},
 		]);
+
+		// console.log(carts)
+		// console.log('carts::::::::::::',carts[0].storeId)
 
 		let subtotal = 0;
 		let grandTotal = 0;
@@ -91,11 +95,15 @@ export const createOrder = async (req, res, next) => {
 			cart: cartItems,
 			orderdate: new Date(),
 			amount: amount,
+			storeId : carts[0].storeId,
 		});
 
 		res.status(200).json({
 			success: true,
 			message: 'Order created successfully',
+			data : {
+				orderId : order._id,
+			}
 		});
 	} catch (error) {
 		console.log(error);
@@ -110,8 +118,8 @@ export const createOrder = async (req, res, next) => {
 export const getAllOrdersForUser = async (req, res) => {
 	try {
 	  const {userId} = req.user;
-	  console.log('iddddddddddddd',userId)
 	//   const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
+
   
 	  if (!userId) {
 		return res.status(400).json({
@@ -189,20 +197,13 @@ export const getAllOrdersForUser = async (req, res) => {
 		  },
 		},
 	  ]);
-  
-	//   // If no orders are found for the user, send an appropriate message
-	//   if (orders.length === 0) {
-	// 	return res.status(404).json({
-	// 	  success: false,
-	// 	  message: 'No orders found for this user.',
-	// 	});
-	//   }
+
   
 	  // Return the result
 	  res.status(200).json({
 		success: true,
 		message: 'Orders fetched successfully',
-		data: { orders },
+		data: { orders : orders },
 	  });
 	} catch (error) {
 	  console.log(error);
@@ -220,8 +221,11 @@ export const getAllOrdersForUser = async (req, res) => {
 // API to fetch order details by orderId for a specific user
 export const getOrderbyId = async (req, res) => {
 	try {
-	  const { orderId } = req.params;  // Fetch orderId from request params
-	//   const userId = '67933c82531c7919c546e8b3'; // Replace with actual user ID
+	  const { orderId } = req.params; 
+	//   const { userId } = req.user;
+
+	   // Fetch orderId from request params
+	  const userId = '67933c82531c7919c546e8b3'; 
   
 	  if (!orderId) {
 		return res.status(400).json({
@@ -328,7 +332,7 @@ export const getOrderbyId = async (req, res) => {
 	  return res.status(200).json({
 		success: true,
 		message: 'Order details fetched successfully',
-		data: orderDetails[0],  // Since we group by order ID, we return the first (and only) document
+		data: {orders : orderDetails[0]},  // Since we group by order ID, we return the first (and only) document
 	  });
 	} catch (error) {
 	  console.error(error);
