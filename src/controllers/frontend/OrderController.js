@@ -465,7 +465,7 @@ export const getOrderbyId = async (req, res) => {
 			shopDetails: { $first: '$shopDetails' },
 			products: { // Group all products into an array
 			  $push: {
-				productId: '$productDetails._id',
+				_id: '$productDetails._id',
 				productName: '$productDetails.productName',
 				image: '$productDetails.image',
 				description: '$productDetails.description',
