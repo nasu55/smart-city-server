@@ -335,7 +335,7 @@ export const shopAuthentication = async (req, res, next) => {
 		}
 
 		const accessToken = jwt.sign({ userId: user._id }, env.SHOP_JWT_SECRET_KEY, { expiresIn: env.JWT_EXPIRES });
-		const userData = { email: user.email_Id };
+		const userData = { email: user.email_Id, name: user.shopName, image:user.image };
 
 		return res.status(200).json({
 			success: true,
