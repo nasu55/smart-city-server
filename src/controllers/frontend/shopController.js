@@ -352,6 +352,11 @@ export const postFavourite = async (req, res) => {
 			shopId: shopId,
 		});
 
+		const shop = await ShopModel.findOne({ _id : new mongoose.Types.ObjectId(shopId) })
+
+		shop.isFavorite = true;
+		await shop.save();
+
 		return res.status(200).json({
 			success: true,
 			message: 'favorited Successfully',
