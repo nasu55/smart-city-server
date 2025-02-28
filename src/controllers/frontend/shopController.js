@@ -372,6 +372,7 @@ export const postFavourite = async (req, res) => {
 
 export const getFavourite = async (req, res) => {
 	try {
+		console.log('ccccccfc')
 		const userId = req.user;
 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 
