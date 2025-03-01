@@ -2,10 +2,8 @@ import jwt from "jsonwebtoken"
 import env from "../../env.js";
 
 export const authMiddleware = (req, res, next) => {
-
-
+console.log('START')
 	const authHeader = req.headers.authorization;
-	console.log('tokennnnnnnnnnnnnn',authHeader)
 
 	if (!authHeader) {
 		return res.status(401).json({
@@ -23,17 +21,16 @@ export const authMiddleware = (req, res, next) => {
 
 
 		if (!decodeData) {
+			console.log("🚀 ~ authMiddleware ~ decodeData:")
 			return res.status(401).json({
 				success: false,
 				message: 'Authentication failed.',
 			});
 		}
-
+console.log('first')
 		req.user = decodeData;
-
 		next();
 	} catch (error) {
-		// return next(unauthorizedError('Token expired'));
 		console.log('error',error)
 
 	}

@@ -59,11 +59,7 @@ const shopSchema = new mongoose.Schema(
 			required: false,
 			default: false,
 		},
-		isFavorite: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
+	
 	},
 	{ timestamps: true },
 );
