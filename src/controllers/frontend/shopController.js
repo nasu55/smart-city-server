@@ -360,7 +360,6 @@ export const getShop = async (req, res) => {
 					_id: new mongoose.Types.ObjectId(shopId),
 					// category:new mongoose.Types.ObjectId(categoryId),
 					status: 'isApproved',
-					featured: true,
 				},
 			},
 			{

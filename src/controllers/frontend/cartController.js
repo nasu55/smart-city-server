@@ -68,6 +68,7 @@ export const createCart = async (req, res) => {
 					price: '$products.price',
 					productName: '$products.productName',
 					image: '$products.image',
+					storeId: '$products.storeId',
 				},
 			},
 		]);
