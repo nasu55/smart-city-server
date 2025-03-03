@@ -525,14 +525,9 @@ export const postFavourite = async (req, res) => {
 
 export const getFavourite = async (req, res) => {
 	try {
-<<<<<<< Updated upstream
-		console.log('ccccccfc')
-		const userId = req.user;
-=======
 		console.log('calllllllllll');
 
 		const { userId } = req.user;
->>>>>>> Stashed changes
 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 		console.log('🚀 ~ getFavourite ~ userId:', userId);
 
