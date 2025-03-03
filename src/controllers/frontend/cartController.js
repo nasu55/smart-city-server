@@ -68,7 +68,6 @@ export const createCart = async (req, res) => {
 					price: '$products.price',
 					productName: '$products.productName',
 					image: '$products.image',
-					storeId: '$products.storeId',
 				},
 			},
 		]);
@@ -215,10 +214,10 @@ export const getAllCarts = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error)
-		// return res.status(500).json({
-		// 	success: false,
-		// 	message: 'Server error',
-		// });
+		return res.status(500).json({
+			success: false,
+			message: 'Server error',
+		});
 	}
 };
 export const deleteOne = async (req, res) => {
