@@ -125,7 +125,6 @@ export const getAllCarts = async (req, res) => {
 		const { userId } = req.user;
 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
 
-
 		const carts = await CartModel.aggregate([
 			{
 				$match: {
@@ -170,7 +169,6 @@ export const getAllCarts = async (req, res) => {
 			},
 		]);
 
-		// console.log('prodddddd',carts)
 		let subtotal = 0;
 		let grandTotal = 0;
 		let tax = 30;
@@ -197,6 +195,8 @@ export const getAllCarts = async (req, res) => {
 		// Calculate grandTotalWithTax (grandTotal + tax)
 		const grandTotalWithTax = grandTotal + tax;
 
+		const storeId = carts.length > 0 ? carts[0].storeId : null;
+
 		return res.status(200).json({
 			success: true,
 			message: 'Fetched Successfully',
@@ -208,7 +208,7 @@ export const getAllCarts = async (req, res) => {
 					discount,
 					grandTotalWithTax,
 					tax,
-					storeId : carts.storeId
+					storeId
 				},
 			},
 		});
@@ -223,10 +223,8 @@ export const getAllCarts = async (req, res) => {
 export const deleteOne = async (req, res) => {
 	try {
 		const { userId } = req.user;
-		console.log("🚀 ~ deleteOne ~ userId:", userId)
 		const { productId } = req.body;
 		const carts = await CartModel.deleteOne({ userId: userId, productId: productId });
-		console.log("🚀 ~ deleteOne ~ productId:", productId)
 
 		return res.status(200).json({
 			success: true,
@@ -246,7 +244,7 @@ export const deleteMany = async (req, res) => {
 
 		return res.status(200).json({
 			success: true,
-			message: 'Deleted',
+			message: 'Deleted Successfully',
 		});
 	} catch (error) {
 		return res.status(500).json({
