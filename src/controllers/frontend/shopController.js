@@ -353,6 +353,8 @@ export const getShop = async (req, res) => {
 	try {
 		const shopId = req.params.id;
 
+		const { userId } = req.user;
+
 		const shops = await ShopModel.aggregate([
 			{
 				$match: {
@@ -399,7 +401,6 @@ export const getShop = async (req, res) => {
 				},
 			},
 
-			// Lookup in FavouriteShopModel to check if the shop is favorited by the user
 			{
 				$lookup: {
 					from: FavouriteShopModel.modelName,
@@ -444,6 +445,7 @@ export const getShop = async (req, res) => {
 			data: { shops: shops.at(0) },
 		});
 	} catch (error) {
+		console.log(error)
 		return res.status(500).json({
 			success: false,
 			message: 'Server error',
@@ -490,37 +492,6 @@ export const postFavourite = async (req, res) => {
 		});
 	}
 };
-
-// export const postFavourite = async (req, res) => {
-// 	try {
-// 		// console.log(first)
-// 		const { userId } = req.user;
-// 		// const userId = new mongoose.Types.ObjectId('67933c82531c7919c546e8b3');
-// 		const { shopId } = req.body;
-// 		console.log(shopId);
-
-// 		const favouriteShop = await FavouriteShopModel.create({
-// 			userId: userId,
-// 			shopId: shopId,
-// 		});
-
-// 		const shop = await ShopModel.findOne({ _id: new mongoose.Types.ObjectId(shopId) });
-
-// 		shop.isFavorite = !shop.isFavorite;
-// 		await shop.save();
-
-// 		return res.status(200).json({
-// 			success: true,
-// 			message: 'favorited Successfully',
-// 		});
-// 	} catch (error) {
-// 		console.log('err', error);
-// 		return res.status(500).json({
-// 			success: false,
-// 			message: 'Server error',
-// 		});
-// 	}
-// };
 
 export const getFavourite = async (req, res) => {
 	try {
